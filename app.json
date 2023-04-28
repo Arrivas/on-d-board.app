@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "on_d_board.app",
+    "slug": "on_d_board.app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
