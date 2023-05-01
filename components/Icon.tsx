@@ -10,6 +10,7 @@ import {
   MaterialIcons,
   SimpleLineIcons,
   Octicons,
+  FontAwesome,
 } from "@expo/vector-icons";
 
 interface Icon {
@@ -20,6 +21,7 @@ interface Icon {
   materialName?: keyof typeof MaterialIcons.glyphMap;
   simpleName?: keyof typeof SimpleLineIcons.glyphMap;
   octName?: keyof typeof Octicons.glyphMap;
+  FAName?: keyof typeof FontAwesome.glyphMap;
   iconLibrary?: string;
   size?: number;
   color?: string;
@@ -40,6 +42,7 @@ const Icon = ({
   materialName,
   simpleName,
   octName,
+  FAName,
 }: Icon) => {
   return (
     <>
@@ -60,6 +63,8 @@ const Icon = ({
           <MaterialIcons name={materialName} size={size} color={color} />
         ) : iconLibrary === "SimpleLineIcons" ? (
           <SimpleLineIcons name={simpleName} size={size} color={color} />
+        ) : iconLibrary === "FontAwesome" ? (
+          <FontAwesome name={FAName} size={size} color={color} />
         ) : (
           iconLibrary === "Octicons" && (
             <Octicons name={octName} size={size} color={color} />

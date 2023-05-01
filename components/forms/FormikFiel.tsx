@@ -2,7 +2,7 @@ import React from "react";
 import { Formik } from "formik";
 
 interface FormikFieldProps {
-  onSubmit: (values: any) => void;
+  onSubmit: (values: any, { setSubmitting, setErrors }: any) => void;
   initialValues: any;
   validationSchema?: any;
   children: React.ReactNode;

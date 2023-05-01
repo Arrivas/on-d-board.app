@@ -18,7 +18,7 @@ import {
   moderateScale,
 } from "../../config/metrics";
 import HomeSearch from "./home/HomeSearch";
-import Perks from "./home/Perks";
+import AmenityFilter from "./home/AmenityFilter";
 import AppartmentsCard from "./home/AppartmentsCard";
 import colors from "../../config/colors";
 import { fetchApartments } from "../../functions/fetchApartments";
@@ -72,7 +72,7 @@ const UserHomeScreen = ({ navigation }: any) => {
           </View>
         </TouchableWithoutFeedback>
         {/* perks */}
-        <Perks
+        <AmenityFilter
           setSelectedPerks={setSelectedPerks}
           selectedPerks={selectedPerks}
         />
@@ -98,11 +98,9 @@ const UserHomeScreen = ({ navigation }: any) => {
                     const { apartmentInfo, docId, tenantInfo } = item;
                     return (
                       <AppartmentsCard
+                        apartmentDetails={item}
+                        navigation={navigation}
                         key={docId}
-                        address={apartmentInfo.address}
-                        apartmentName={apartmentInfo.apartmentName}
-                        docId={docId}
-                        imageUrl={apartmentInfo.imageUrl}
                       />
                     );
                   })}

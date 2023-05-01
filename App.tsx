@@ -1,9 +1,36 @@
 import React, { useEffect, useState } from "react";
 import Providers from "./components/Providers";
 import Routes from "./navigation/Routes";
+export interface Bedspaces {
+  bedspace: {
+    bedInformation: {
+      isDoubleDeck: boolean;
+      location: string;
+    };
+    imageName: string;
+    imgUrl: string;
+    isAvailable: boolean;
+    price: number;
+    name: string;
+  };
+}
 
 export interface UserSliceInitialState {
   user: any;
+}
+
+export interface Amenities {
+  value: string;
+  offering: boolean;
+}
+
+export interface ApartmentSpecificationsProps {
+  specifications: {
+    value?: number | string;
+    label: number | string;
+    icon: any;
+  }[];
+  additionalStyle?: string;
 }
 
 export interface Apartments {
@@ -19,19 +46,21 @@ export interface Apartments {
       from: string;
       to: string;
     };
+    description: string;
   };
   tenantInfo: {
     contactNo: string;
     ownerName: string;
   };
+
+  amenities: Amenities[];
+
   docId: string;
 }
 
 export interface AppartmentsCardProps {
-  docId: string;
-  imageUrl: string;
-  apartmentName: string;
-  address: string;
+  apartmentDetails: Apartments;
+  navigation: any;
 }
 
 export default function App() {

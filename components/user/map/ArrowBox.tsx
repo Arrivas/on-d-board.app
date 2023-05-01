@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Svg, { Path, Polygon } from "react-native-svg";
+import { View, Text } from "react-native";
+import { formatAsCurrency } from "../../../functions/formatAsCurrency";
 
 interface ArrowBoxProps {
   text: string;
@@ -13,17 +13,6 @@ interface ArrowBoxProps {
     longitude: string;
   };
 }
-
-const formatAsCurrency = (value: number) => {
-  const formatter = new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-
-  return formatter.format(value);
-};
 
 const ArrowBox: React.FC<ArrowBoxProps> = ({
   text,

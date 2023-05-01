@@ -1,8 +1,6 @@
 import { View, Text, Image, ScrollView, Dimensions } from "react-native";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import React, { useEffect, useState, useRef } from "react";
-import getDimensions from "../../../config/getDimensions";
-import { Apartments } from "../../../App";
 import { RootState } from "../../../store";
 import { useSelector } from "react-redux";
 import ArrowBox from "./ArrowBox";
@@ -71,7 +69,7 @@ const NearbyDormMap = () => {
       <View className="bottom-5 absolute px-5">
         <ScrollView
           horizontal
-          snapToInterval={horizontalScale(220) + 2 * 4} // 4 is the margin value from 'mr-2'
+          snapToInterval={horizontalScale(220) + 2 * 4}
           snapToAlignment="center"
           onScroll={(event) => {
             const scrollX = event.nativeEvent.contentOffset.x;
@@ -83,7 +81,6 @@ const NearbyDormMap = () => {
             const { apartmentInfo, docId } = item;
             const { geoLocation, imageUrl, address, apartmentName } =
               apartmentInfo;
-            const { price } = apartmentInfo;
 
             return (
               <View
@@ -98,7 +95,6 @@ const NearbyDormMap = () => {
                   style={{
                     height: verticalScale(80),
                     width: "auto",
-                    // width: horizontalScale(150),
                   }}
                   source={{ uri: imageUrl }}
                 />

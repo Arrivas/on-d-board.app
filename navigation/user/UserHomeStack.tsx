@@ -1,17 +1,13 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import UserHomeScreen from "../../components/user/UserHomeScreen";
+import ApartmentDetails from "../../components/user/book/ApartmentDetails";
 
 const Stack = createNativeStackNavigator();
 
 const Logout = () => <></>;
 
 const UserHomeStack = () => (
-  <Stack.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarVisible: route.name !== "NearbyDormMap",
-    })}
-  >
+  <Stack.Navigator initialRouteName="Home">
     <Stack.Screen
       name="Home"
       component={UserHomeScreen}

@@ -1,36 +1,44 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableNativeFeedback } from "react-native";
 import React from "react";
 import { horizontalScale, verticalScale } from "../../../config/metrics";
 import { AppartmentsCardProps } from "../../../App";
 
 const AppartmentsCard: React.FC<AppartmentsCardProps> = ({
-  docId,
-  imageUrl,
-  apartmentName,
-  address,
+  navigation,
+  apartmentDetails,
 }) => {
+  const { apartmentInfo } = apartmentDetails;
+  const { apartmentName, address, imageUrl } = apartmentInfo;
   return (
-    <View
-      key={docId}
-      className="self-start mr-2 h-full bg-white object-contain"
-      style={{
-        width: horizontalScale(160),
-      }}
+    <TouchableNativeFeedback
+      onPress={() =>
+        navigation.navigate("BookStack", {
+          screen: "ApartmentDetails",
+          params: { apartmentDetails },
+        })
+      }
     >
-      <Image
-        className="rounded-lg"
+      <View
+        className="self-start mr-2 h-full bg-white object-contain"
         style={{
-          height: verticalScale(160),
-          width: "auto",
-          // width: horizontalScale(150),
+          width: horizontalScale(160),
         }}
-        source={{ uri: imageUrl }}
-      />
-      <View className="py-2">
-        <Text className="font-bold">{apartmentName}</Text>
-        <Text>{address}</Text>
+      >
+        <Image
+          className="rounded-lg"
+          style={{
+            height: verticalScale(160),
+            width: "auto",
+            // width: horizontalScale(150),
+          }}
+          source={{ uri: imageUrl }}
+        />
+        <View className="py-2">
+          <Text className="font-bold">{apartmentName}</Text>
+          <Text>{address}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableNativeFeedback>
   );
 };
 

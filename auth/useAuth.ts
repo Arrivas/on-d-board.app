@@ -20,6 +20,7 @@ const logOut = async () => {
     .then(() => console.log("user signed out"))
     .catch((err) => console.log(err.code));
 
+  await firebase.auth().currentUser?.delete();
   // remove expo token
   // if (user?.userType === 'customer')
   //   return expoTokenCustomer(user?.docId.trim(), '');

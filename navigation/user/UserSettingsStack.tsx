@@ -5,7 +5,13 @@ const Stack = createNativeStackNavigator();
 
 const UserSettingsStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Settings" component={SettingsScreen}></Stack.Screen>
+    <Stack.Screen
+      name="Settings"
+      component={SettingsScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
   </Stack.Navigator>
 );
 

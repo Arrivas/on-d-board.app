@@ -9,6 +9,11 @@ import {
 import colors from "../../config/colors";
 import getDimensions from "../../config/getDimensions";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  moderateScale,
+  verticalScale,
+  horizontalScale,
+} from "../../config/metrics";
 
 interface AppTextInputProps {
   name: string;
@@ -44,10 +49,11 @@ const InputText: React.FC<AppTextInputProps> = ({
 
   return (
     <View
-      className={`items-center flex-row p-3 rounded-xl mb-3 bg-gray-100`}
+      className={`items-center flex-row rounded-xl  mb-3 bg-gray-100`}
       style={{
         borderWidth: 1,
         borderColor: applyBorder ? colors.primary : "transparent",
+        padding: moderateScale(8),
       }}
     >
       {iconName ? (

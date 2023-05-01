@@ -8,7 +8,10 @@ interface PerksProps {
   setSelectedPerks: any;
 }
 
-const Perks: React.FC<PerksProps> = ({ selectedPerks, setSelectedPerks }) => {
+const AmenityFilter: React.FC<PerksProps> = ({
+  selectedPerks,
+  setSelectedPerks,
+}) => {
   const handlePerksPress = (label: string) => {
     setSelectedPerks(
       selectedPerks.includes(label)
@@ -125,4 +128,4 @@ const Perks: React.FC<PerksProps> = ({ selectedPerks, setSelectedPerks }) => {
   );
 };
 
-export default Perks;
+export default AmenityFilter;

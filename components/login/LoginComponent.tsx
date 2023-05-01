@@ -44,13 +44,12 @@ const LoginComponent = ({ navigation }: any) => {
           className="items-center flex-1"
           style={{
             paddingHorizontal: width >= 500 ? width * 0.2 : width * 0.08,
-            paddingTop: width * 0.08,
           }}
         >
           <View
             className=" w-full justify-center"
             style={{
-              paddingTop: width * 0.08,
+              paddingTop: width * 0.05,
             }}
           >
             <View>
