@@ -1,4 +1,11 @@
-import { View, Text, Image, ScrollView, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Dimensions,
+  TouchableNativeFeedback,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import React, { useEffect, useState, useRef } from "react";
 import { RootState } from "../../../store";
@@ -11,7 +18,7 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const NearbyDormMap = () => {
+const NearbyDormMap = ({ navigation }: any) => {
   const mapRef = useRef<MapView>(null);
   const apartments = useSelector(
     (state: RootState) => state.apartments.apartments
@@ -83,26 +90,35 @@ const NearbyDormMap = () => {
               apartmentInfo;
 
             return (
-              <View
+              <TouchableNativeFeedback
+                onPress={() =>
+                  navigation.navigate("BookStack", {
+                    screen: "ApartmentDetails",
+                    params: { apartmentDetails: item },
+                  })
+                }
                 key={docId}
-                className="self-start mr-2 h-full bg-white object-contain"
-                style={{
-                  width: horizontalScale(250),
-                }}
               >
-                <Image
-                  className="rounded-t-lg"
+                <View
+                  className="self-start mr-2 h-full bg-white object-contain"
                   style={{
-                    height: verticalScale(80),
-                    width: "auto",
+                    width: horizontalScale(250),
                   }}
-                  source={{ uri: imageUrl }}
-                />
-                <View className="p-2">
-                  <Text className="font-bold">{apartmentName}</Text>
-                  <Text>{address}</Text>
+                >
+                  <Image
+                    className="rounded-t-lg"
+                    style={{
+                      height: verticalScale(80),
+                      width: "auto",
+                    }}
+                    source={{ uri: imageUrl }}
+                  />
+                  <View className="p-2">
+                    <Text className="font-bold">{apartmentName}</Text>
+                    <Text>{address}</Text>
+                  </View>
                 </View>
-              </View>
+              </TouchableNativeFeedback>
             );
           })}
         </ScrollView>

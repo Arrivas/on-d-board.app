@@ -58,6 +58,12 @@ export interface Apartments {
   docId: string;
 }
 
+export interface VerifyEmailProps {
+  isEmailVerified: boolean;
+  setIsEmailVerified: React.Dispatch<React.SetStateAction<boolean>>;
+  userState: any;
+}
+
 export interface AppartmentsCardProps {
   apartmentDetails: Apartments;
   navigation: any;

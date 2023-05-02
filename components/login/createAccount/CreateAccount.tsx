@@ -20,7 +20,7 @@ import "@react-native-firebase/firestore";
 import "@react-native-firebase/auth";
 
 // tenant
-import TenantFirstStep from "./tenant/TenantFirstStep";
+import CreateUserDetails from "./CreateUserDetails";
 import CheckEmail from "../CheckEmail";
 
 export interface CreateEmail {
@@ -32,19 +32,18 @@ export interface CreateUser {
   lastName: string;
   password: string;
   userType: string;
+  email?: string;
+  uid?: string;
+  imageUrl?: string;
 }
 
 const CreateAccount = ({ navigation }: any) => {
-  const [tenantStep, setTenantStep] = useState<number>(1);
   const [isValidEmail, setIsValidEmail] = useState<boolean>(false);
   const handleCancelRegistration = () => navigation.goBack();
-  const { width, height } = getDimensions();
-
+  const { width } = getDimensions();
   const [emailDetails, setEmailDetails] = useState<string>("");
-  const [firstStepDetails, setFirstStepDetails] = useState<CreateUser | null>(
-    null
-  );
   const [userType, setUserType] = useState("tenant");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -73,10 +72,7 @@ const CreateAccount = ({ navigation }: any) => {
     return () => backHandler.remove();
   }, []);
 
-  const handleCheckEmailSubmit = (
-    values: CreateEmail,
-    { setSubmitting, setErrors }: any
-  ) => {
+  const handleCheckEmailSubmit = (values: CreateEmail, { setErrors }: any) => {
     firebase
       .auth()
       .fetchSignInMethodsForEmail(values.email.trim())
@@ -86,12 +82,34 @@ const CreateAccount = ({ navigation }: any) => {
             email: "please select other email that is not taken",
           });
         }
+        setEmailDetails(values.email.trim());
         setIsValidEmail(true);
       });
   };
 
-  const handleFirstStepSubmit = (values: CreateUser) => {
-    setFirstStepDetails(values);
+  const handleCreateUser = async (values: CreateUser) => {
+    values.email = emailDetails;
+    try {
+      const { user } = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(values.email, values.password);
+      // await user.sendEmailVerification();
+      values.uid = user.uid;
+      values.imageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/on-d-board.appspot.com/o/user.webp?alt=media&token=c8664080-498b-4311-be44-6ea8985081f2";
+      values.userType = userType;
+      await firebase
+        .firestore()
+        .collection("tenants")
+        .add(values)
+        .then((res) => {
+          res.update({ docId: res.id });
+        });
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   };
 
   return (
@@ -130,8 +148,12 @@ const CreateAccount = ({ navigation }: any) => {
                 setUserType={setUserType}
               />
             )}
-            {isValidEmail && tenantStep === 1 && (
-              <TenantFirstStep handleFirstStepSubmit={handleFirstStepSubmit} />
+            {isValidEmail && (
+              <CreateUserDetails
+                handleCreateUser={handleCreateUser}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+              />
             )}
 
             {!isValidEmail && (

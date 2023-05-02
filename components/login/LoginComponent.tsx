@@ -14,6 +14,7 @@ import SafeScreenView from "../SafeScreenView";
 import getDimensions from "../../config/getDimensions";
 import GoogleSvg from "./GoogleSvg";
 import colors from "../../config/colors";
+import { firebase } from "@react-native-firebase/auth";
 
 interface LoginVal {
   email: string;
@@ -29,8 +30,18 @@ const LoginComponent = ({ navigation }: any) => {
     password: "",
   };
 
-  const handleSubmit = (values: LoginVal) => {
-    console.log(values);
+  const handleSubmit = async (values: LoginVal, { setErrors }: any) => {
+    try {
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(values.email.trim(), values.password);
+    } catch (error: any) {
+      if (error.code === "auth/user-not-found") {
+        setErrors({ email: "email is not registered" });
+      } else if (error.code === "auth/wrong-password") {
+        setErrors({ password: "invalid email or password" });
+      }
+    }
   };
 
   const handleGoogleSignIn = () => {
@@ -81,7 +92,7 @@ const LoginComponent = ({ navigation }: any) => {
             </FormikField>
             <View className="py-2">
               <TouchableNativeFeedback
-                onPress={() => navigation.navigate("ForgotPassword")}
+              // onPress={() => navigation.navigate("ForgotPassword")}
               >
                 <View className="self-start">
                   <Text

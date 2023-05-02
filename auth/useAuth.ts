@@ -1,6 +1,8 @@
 import secureStore from "./storage";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/auth";
+import { store } from "../store";
+import { setUser } from "../store/userSlice";
 
 // import {
 //   expoTokenCustomer,
@@ -19,7 +21,7 @@ const logOut = async () => {
     .signOut()
     .then(() => console.log("user signed out"))
     .catch((err) => console.log(err.code));
-
+  store.dispatch(setUser(null));
   await firebase.auth().currentUser?.delete();
   // remove expo token
   // if (user?.userType === 'customer')

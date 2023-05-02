@@ -6,23 +6,33 @@ import {
   Keyboard,
 } from "react-native";
 import React from "react";
-import FormikField from "../../../forms/FormikFiel";
-import AppFormField from "../../../forms/AppFormField";
-import SubmitButton from "../../../forms/SubmitButton";
+import FormikField from "../../forms/FormikFiel";
+import AppFormField from "../../forms/AppFormField";
+import SubmitButton from "../../forms/SubmitButton";
 import * as Yup from "yup";
-import { CreateEmail, CreateUser } from "../CreateAccount";
+import { CreateUser } from "./CreateAccount";
 
-interface TenantFirstStepProps {
-  handleFirstStepSubmit: (values: CreateUser) => void;
+interface CreateUserDetailsProps {
+  handleCreateUser: (values: CreateUser) => void;
+  showPassword: boolean;
+  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TenantFirstStep: React.FC<TenantFirstStepProps> = ({
-  handleFirstStepSubmit,
+const CreateUserDetails: React.FC<CreateUserDetailsProps> = ({
+  handleCreateUser,
+  showPassword,
+  setShowPassword,
 }) => {
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const validationSchema = Yup.object({
     firstName: Yup.string().required(),
     lastName: Yup.string().required(),
-    phoneNumber: Yup.string().required(),
+    phoneNumber: Yup.string()
+      .matches(phoneRegExp, "must be a valid phone number 09xxxxxxxxx")
+      .min(11, "too short")
+      .max(11, "too long")
+      .required(),
     password: Yup.string()
       .required()
       .min(6, "password is too short - should be 6 chars minimum.")
@@ -41,7 +51,7 @@ const TenantFirstStep: React.FC<TenantFirstStepProps> = ({
       <View style={{ flex: 1 }} className="w-full items-center justify-center">
         <Text className="my-2 self-start">enter necessary details</Text>
         <FormikField
-          onSubmit={handleFirstStepSubmit}
+          onSubmit={handleCreateUser}
           initialValues={initialValues}
           validationSchema={validationSchema}
         >
@@ -55,11 +65,18 @@ const TenantFirstStep: React.FC<TenantFirstStepProps> = ({
             placeholder="last name"
             iconName="account"
           />
-          <AppFormField name="phoneNumber" placeholder="+63" iconName="phone" />
+          <AppFormField
+            name="phoneNumber"
+            placeholder="phoneNumber"
+            iconName="phone"
+          />
           <AppFormField
             name="password"
             placeholder="password"
             iconName="lock"
+            isPassword={true}
+            showPassword={showPassword}
+            onShowPassword={setShowPassword}
           />
 
           <SubmitButton
@@ -73,4 +90,4 @@ const TenantFirstStep: React.FC<TenantFirstStepProps> = ({
   );
 };
 
-export default TenantFirstStep;
+export default CreateUserDetails;
