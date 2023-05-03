@@ -11,6 +11,7 @@ import UserRootStack from "./user/UserRootStack";
 import { setUser } from "../store/userSlice";
 import { logIn, logOut } from "../auth/useAuth";
 import VerifyEmail from "../components/login/verifyEmail/VerifyEmail";
+import LandlordRootStack from "./landlord/LandlordRootStack";
 
 const Routes = () => {
   const dispatch = useDispatch();
@@ -51,7 +52,6 @@ const Routes = () => {
     }
   };
 
-  console.log(isEmailVerified);
   useEffect(() => {
     const subscriber = firebase.auth().onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -114,7 +114,8 @@ const Routes = () => {
 
   return (
     <NavigationContainer>
-      {user?.user?.userType === "tenant" && !isEmailVerified ? (
+      {(user?.user?.userType === "tenant" && !isEmailVerified) ||
+      (user?.user?.userType === "landlord" && !isEmailVerified) ? (
         <VerifyEmail
           isEmailVerified={isEmailVerified}
           setIsEmailVerified={setIsEmailVerified}
@@ -122,6 +123,8 @@ const Routes = () => {
         />
       ) : user?.user === "anonymous" || user?.user?.userType === "tenant" ? (
         <UserRootStack />
+      ) : user?.user?.userType === "landlord" ? (
+        <LandlordRootStack />
       ) : (
         <AuthStack />
       )}

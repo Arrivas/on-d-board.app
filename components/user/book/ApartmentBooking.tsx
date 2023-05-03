@@ -17,7 +17,7 @@ import ApartmentSpecifications from "../book/ApartmentSpecifications";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
-const ApartmentBooking = ({ route }: any) => {
+const ApartmentBooking = ({ route, navigation }: any) => {
   const user = useSelector((state: RootState) => state.user.user);
   const [bedspaces, setBedspaces] = useState<Bedspaces[] | null | undefined>(
     null
@@ -53,6 +53,54 @@ const ApartmentBooking = ({ route }: any) => {
   const bedLocation =
     selectedBedspace && selectedBedspace.bedspace.bedInformation?.location;
   const price = selectedBedspace && selectedBedspace?.bedspace.price;
+
+  const handleBook = async () => {
+    const ongoing: any = {
+      docId,
+      tenantDetails: {
+        imageUrl: user?.imageUrl,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        phoneNumber: user?.phoneNumber,
+        uid: user?.uid,
+      },
+      bookingDetails: {
+        bedInformation: selectedBedspace?.bedspace.bedInformation,
+        imgUrl: selectedBedspace?.bedspace.imgUrl,
+        name: selectedBedspace?.bedspace.name,
+        price: selectedBedspace?.bedspace.price,
+      },
+    };
+    await firebase
+      .firestore()
+      .collection("apartmentRooms")
+      .doc(docId)
+      .collection("bookings")
+      .add(ongoing)
+      .then((res) => {
+        res.update({
+          docId: res.id,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        ongoing.docId = res.id;
+        navigation.replace("SuccessPage", { ongoing });
+      });
+    // navigation.navigate("SuccessPage", { ongoing });
+    // const updatedBedspace = bedspaces?.map((item) => {
+    //   if (item.bedspace.name === selectedBedspace?.bedspace.name)
+    //     return {
+    //       ...item,
+    //       isAvailable: false,
+    //     };
+    //   return item;
+    // });
+    // await firebase
+    //   .firestore()
+    //   .collection("apartmentRooms")
+    //   .doc(docId)
+    //   .update({ bedspaces: updatedBedspace });
+  };
+
   return (
     <SafeScreenView>
       <View className="flex-1 px-4">
@@ -141,6 +189,12 @@ const ApartmentBooking = ({ route }: any) => {
                   },
                 ]}
               />
+              <View className="bg-yellow-100 p-4 rounded-md">
+                <Text className="italic">
+                  You must arrive within 72 hours prior to the booking, or else
+                  the reservation will be automatically cancelled.
+                </Text>
+              </View>
             </View>
           )}
         </ScrollView>
@@ -177,7 +231,7 @@ const ApartmentBooking = ({ route }: any) => {
                 </View>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={handleBook}>
               <View
                 className="flex-row items-center bg-[#ff6666] px-2 rounded-md ml-1 mb-2 justify-center"
                 style={{
@@ -193,11 +247,6 @@ const ApartmentBooking = ({ route }: any) => {
                 }}
               >
                 <Text className="font-bold text-white">Reserve Now</Text>
-                <Icon
-                  iconLibrary="IonIcons"
-                  ionName="chevron-forward"
-                  color="#fff"
-                />
               </View>
             </TouchableNativeFeedback>
           </View>
