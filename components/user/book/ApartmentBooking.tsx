@@ -4,6 +4,7 @@ import {
   TouchableNativeFeedback,
   Image,
   ScrollView,
+  ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import firebase from "@react-native-firebase/app";
@@ -14,8 +15,9 @@ import colors from "../../../config/colors";
 import { formatAsCurrency } from "../../../functions/formatAsCurrency";
 import Icon from "../../Icon";
 import ApartmentSpecifications from "../book/ApartmentSpecifications";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
+import { setLoading } from "../../../store/loadingSlice";
 
 const ApartmentBooking = ({ route, navigation }: any) => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -24,16 +26,20 @@ const ApartmentBooking = ({ route, navigation }: any) => {
   );
   const [selectedBedspace, setSelectedBedspace] = useState<Bedspaces>();
   const { docId } = route.params;
+  const dispatch = useDispatch();
 
   const fetchBedspaces = async (): Promise<Bedspaces[] | null | undefined> => {
+    dispatch(setLoading(true));
     const query = firebase.firestore().collection("apartmentRooms").doc(docId);
     try {
       const snapshot = await query.get();
+      dispatch(setLoading(false));
       if (!snapshot.exists) return;
       return snapshot.data()?.bedspaces;
     } catch (err) {
       console.log(err);
     }
+    dispatch(setLoading(false));
   };
 
   useEffect(() => {
@@ -71,6 +77,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         price: selectedBedspace?.bedspace.price,
       },
     };
+    dispatch(setLoading(true));
     await firebase
       .firestore()
       .collection("apartmentRooms")
@@ -78,33 +85,49 @@ const ApartmentBooking = ({ route, navigation }: any) => {
       .collection("bookings")
       .add(ongoing)
       .then((res) => {
+        dispatch(setLoading(false));
         res.update({
           docId: res.id,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         ongoing.docId = res.id;
-        navigation.replace("SuccessPage", { ongoing });
       });
-    // navigation.navigate("SuccessPage", { ongoing });
-    // const updatedBedspace = bedspaces?.map((item) => {
-    //   if (item.bedspace.name === selectedBedspace?.bedspace.name)
-    //     return {
-    //       ...item,
-    //       isAvailable: false,
-    //     };
-    //   return item;
-    // });
-    // await firebase
-    //   .firestore()
-    //   .collection("apartmentRooms")
-    //   .doc(docId)
-    //   .update({ bedspaces: updatedBedspace });
+
+    if (bedspaces) {
+      const selectedBedspaceName = selectedBedspace?.bedspace.name;
+      const index = bedspaces.findIndex(
+        (item) => item.bedspace.name === selectedBedspaceName
+      );
+
+      if (index !== undefined && index >= 0) {
+        bedspaces[index].bedspace.isAvailable = false;
+      }
+    }
+
+    await firebase
+      .firestore()
+      .collection("apartmentRooms")
+      .doc(docId)
+      .update({ bedspaces })
+      .then(() => {
+        navigation.replace("SuccessPage", { ongoing });
+      })
+      .catch(() => {
+        dispatch(setLoading(false));
+        ToastAndroid.show(
+          "cannot finish booking, something went wrong!",
+          ToastAndroid.SHORT
+        );
+      });
+    dispatch(setLoading(false));
   };
 
   return (
     <SafeScreenView>
       <View className="flex-1 px-4">
-        <Text className="font-semibold my-1">available bedspace</Text>
+        {bedspaces?.length !== undefined && (
+          <Text className="font-semibold my-1">available bedspace</Text>
+        )}
         <View className="flex flex-row flex-wrap">
           {bedspaces?.map((item) => (
             <TouchableNativeFeedback
@@ -254,6 +277,14 @@ const ApartmentBooking = ({ route, navigation }: any) => {
           <></>
         )}
       </View>
+      {/* show empty */}
+      {bedspaces === undefined && (
+        <View className="absolute left-0 h-full w-full items-center justify-center opacity-40 ">
+          <Text className="font-semibold text-gray-500">
+            no bedspaces available yet
+          </Text>
+        </View>
+      )}
     </SafeScreenView>
   );
 };

@@ -1,6 +1,5 @@
 import React, { isValidElement, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { UserSliceInitialState } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/auth";
@@ -9,19 +8,24 @@ import auhtStorage from "../auth/storage";
 import AuthStack from "./auth/AuthStack";
 import UserRootStack from "./user/UserRootStack";
 import { setUser } from "../store/userSlice";
-import { logIn, logOut } from "../auth/useAuth";
+import { logIn } from "../auth/useAuth";
 import VerifyEmail from "../components/login/verifyEmail/VerifyEmail";
 import LandlordRootStack from "./landlord/LandlordRootStack";
+import ActivityIndicator from "../components/ActivityIndicator";
+import { RootState } from "../store";
+import { setLoading } from "../store/loadingSlice";
 
 const Routes = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state: UserSliceInitialState) => state.user);
+  const user = useSelector((state: RootState) => state.user);
+  const loading = useSelector((state: RootState) => state.loading);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [userState, setUserState] = useState<any>(null);
   const [refreshInterval, setRefreshInterval] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const getUserInfo = async () => {
+    dispatch(setLoading(true));
     const fetchedUser: any = [];
     const uid = await auhtStorage.getId();
     if (uid === "anonymous") {
@@ -33,10 +37,11 @@ const Routes = () => {
         .limit(1)
         .where("uid", "==", uid)
         .get()
-        .then((data) => {
-          data.forEach((doc) => fetchedUser.push(doc.data()));
-        })
-        .catch(async () => {
+        .then(async (data) => {
+          if (!data.empty) {
+            dispatch(setLoading(false));
+            return data.forEach((doc) => fetchedUser.push(doc.data()));
+          }
           await firebase
             .firestore()
             .collection("landlords")
@@ -46,8 +51,11 @@ const Routes = () => {
             .then((data) => {
               data.forEach((doc) => fetchedUser.push(doc.data()));
             });
+        })
+        .catch(async () => {
+          console.log("cannot get user info");
         });
-
+      dispatch(setLoading(false));
       dispatch(setUser(fetchedUser[0]));
     }
   };
@@ -114,6 +122,7 @@ const Routes = () => {
 
   return (
     <NavigationContainer>
+      <ActivityIndicator isVisible={loading?.loading} />
       {(user?.user?.userType === "tenant" && !isEmailVerified) ||
       (user?.user?.userType === "landlord" && !isEmailVerified) ? (
         <VerifyEmail

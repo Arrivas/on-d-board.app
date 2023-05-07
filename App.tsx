@@ -18,6 +18,9 @@ export interface Bedspaces {
 export interface UserSliceInitialState {
   user: any;
 }
+export interface LoadingSliceInitialState {
+  loading: boolean;
+}
 
 export interface Amenities {
   value: string;
@@ -48,7 +51,7 @@ export interface Apartments {
     };
     description: string;
   };
-  tenantInfo: {
+  landlordInfo: {
     contactNo: string;
     ownerName: string;
   };
@@ -57,6 +60,19 @@ export interface Apartments {
 
   docId: string;
 }
+
+export type LocationObject = {
+  coords: {
+    latitude: number;
+    longitude: number;
+    altitude: number | null;
+    accuracy: number;
+    altitudeAccuracy: number | null;
+    heading: number | null;
+    speed: number | null;
+  };
+  timestamp: number;
+};
 
 export interface VerifyEmailProps {
   isEmailVerified: boolean;

@@ -7,7 +7,12 @@ const Logout = () => <></>;
 
 const LandlordRootStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Home" component={LandlordHomeScreen} />
+    <Stack.Screen
+      name="Home"
+      component={LandlordHomeScreen}
+      options={{ headerShown: false }}
+    />
+
     <Stack.Screen
       name="logout"
       component={Logout}

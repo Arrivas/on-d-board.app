@@ -15,6 +15,10 @@ import getDimensions from "../../config/getDimensions";
 import GoogleSvg from "./GoogleSvg";
 import colors from "../../config/colors";
 import { firebase } from "@react-native-firebase/auth";
+import { setLoading } from "../../store/loadingSlice";
+import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
+import { LoadingSliceInitialState } from "../../App";
 
 interface LoginVal {
   email: string;
@@ -24,13 +28,24 @@ interface LoginVal {
 const LoginComponent = ({ navigation }: any) => {
   const [showPassword, setShowPassword] = useState(false);
   const { width } = getDimensions();
+  const dispatch = useDispatch();
+  const loading = useSelector(
+    (state: LoadingSliceInitialState) => state.loading
+  );
 
   const initialValues = {
     email: "",
     password: "",
   };
 
+  const validationSchema = () =>
+    Yup.object({
+      email: Yup.string().email().required(),
+      password: Yup.string().required(),
+    });
+
   const handleSubmit = async (values: LoginVal, { setErrors }: any) => {
+    dispatch(setLoading(true));
     try {
       await firebase
         .auth()
@@ -42,6 +57,7 @@ const LoginComponent = ({ navigation }: any) => {
         setErrors({ password: "invalid email or password" });
       }
     }
+    dispatch(setLoading(false));
   };
 
   const handleGoogleSignIn = () => {
@@ -74,7 +90,11 @@ const LoginComponent = ({ navigation }: any) => {
                 </Text>
               </View>
             </View>
-            <FormikField initialValues={initialValues} onSubmit={handleSubmit}>
+            <FormikField
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={validationSchema}
+            >
               <AppFormField
                 name="email"
                 iconName="email"

@@ -15,6 +15,8 @@ interface AppFormFieldProps {
   description?: boolean;
   placeholder?: string;
   isPassword?: boolean;
+  useBorder?: boolean;
+  textInputViewClass?: string;
 }
 
 const AppFormField: React.FC<AppFormFieldProps> = ({
@@ -28,6 +30,8 @@ const AppFormField: React.FC<AppFormFieldProps> = ({
   description,
   placeholder,
   isPassword,
+  useBorder,
+  textInputViewClass,
   ...rest
 }) => {
   const { setFieldTouched, handleChange, errors, touched, values }: any =
@@ -36,6 +40,8 @@ const AppFormField: React.FC<AppFormFieldProps> = ({
   return (
     <View className={containerStyle}>
       <AppTextInput
+        textInputViewClass={textInputViewClass}
+        useBorder={useBorder}
         isPassword={isPassword}
         placeholder={placeholder}
         value={values[name]}

@@ -39,7 +39,7 @@ const UserHomeScreen = ({ navigation }: any) => {
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
-      fetchApartments(5).then((res) => dispatch(setApartments(res)));
+      fetchApartments(5, undefined).then((res) => dispatch(setApartments(res)));
     }
     return () => {
       isMounted = false;
@@ -95,7 +95,7 @@ const UserHomeScreen = ({ navigation }: any) => {
                   showsHorizontalScrollIndicator={false}
                 >
                   {apartments.map((item) => {
-                    const { apartmentInfo, docId, tenantInfo } = item;
+                    const { docId } = item;
                     return (
                       <AppartmentsCard
                         apartmentDetails={item}

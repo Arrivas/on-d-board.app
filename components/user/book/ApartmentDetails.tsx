@@ -12,7 +12,6 @@ import colors from "../../../config/colors";
 import { formatAsCurrency } from "../../../functions/formatAsCurrency";
 import ApartmentAmenities from "./ApartmentAmenities";
 import Specifications from "./ApartmentSpecifications";
-import { moderateScale } from "../../../config/metrics";
 
 const ApartmentDetails = ({ route, navigation }: any) => {
   const { apartmentDetails } = route.params;

@@ -28,6 +28,8 @@ interface AppTextInputProps {
   value: any;
   onChangeText?: () => void;
   placeholder?: string;
+  useBorder?: boolean;
+  textInputViewClass?: string;
 }
 
 const InputText: React.FC<AppTextInputProps> = ({
@@ -42,6 +44,8 @@ const InputText: React.FC<AppTextInputProps> = ({
   description = false,
   value,
   placeholder,
+  useBorder,
+  textInputViewClass,
   ...rest
 }) => {
   const [applyBorder, setApplyBorder] = useState(false);
@@ -49,10 +53,14 @@ const InputText: React.FC<AppTextInputProps> = ({
 
   return (
     <View
-      className={`items-center flex-row rounded-xl  mb-3 bg-gray-100`}
+      className={`items-center flex-row rounded-md mb-3 bg-gray-100 ${textInputViewClass}`}
       style={{
         borderWidth: 1,
-        borderColor: applyBorder ? colors.primary : "transparent",
+        borderColor: applyBorder
+          ? colors.primary
+          : useBorder
+          ? "#a6a6a6"
+          : "transparent",
         padding: moderateScale(8),
       }}
     >

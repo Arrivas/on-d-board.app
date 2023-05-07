@@ -1,27 +1,16 @@
-import {
-  View,
-  Text,
-  Alert,
-  BackHandler,
-  Image,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { View, Text, Alert, BackHandler, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import SafeScreenView from "../../SafeScreenView";
-import FormikField from "../../forms/FormikFiel";
-import AppFormField from "../../forms/AppFormField";
-import * as Yup from "yup";
-import SubmitButton from "../../forms/SubmitButton";
 import getDimensions from "../../../config/getDimensions";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/firestore";
 import "@react-native-firebase/auth";
+import { setLoading } from "../../../store/loadingSlice";
 
 // tenant
 import CreateUserDetails from "./CreateUserDetails";
 import CheckEmail from "../CheckEmail";
+import { useDispatch } from "react-redux";
 
 export interface CreateEmail {
   email: string;
@@ -44,6 +33,7 @@ const CreateAccount = ({ navigation }: any) => {
   const [emailDetails, setEmailDetails] = useState<string>("");
   const [userType, setUserType] = useState("tenant");
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -73,6 +63,7 @@ const CreateAccount = ({ navigation }: any) => {
   }, []);
 
   const handleCheckEmailSubmit = (values: CreateEmail, { setErrors }: any) => {
+    dispatch(setLoading(true));
     firebase
       .auth()
       .fetchSignInMethodsForEmail(values.email.trim())
@@ -85,11 +76,13 @@ const CreateAccount = ({ navigation }: any) => {
         setEmailDetails(values.email.trim());
         setIsValidEmail(true);
       });
+    dispatch(setLoading(false));
   };
 
   const handleCreateUser = async (values: CreateUser) => {
     values.email = emailDetails;
     try {
+      dispatch(setLoading(true));
       const { user } = await firebase
         .auth()
         .createUserWithEmailAndPassword(values.email, values.password);
@@ -100,13 +93,14 @@ const CreateAccount = ({ navigation }: any) => {
       values.userType = userType;
       await firebase
         .firestore()
-        .collection("tenants")
+        .collection(`${userType}s`)
         .add(values)
         .then((res) => {
           res.update({ docId: res.id });
         });
       return true;
     } catch (error) {
+      dispatch(setLoading(false));
       console.log(error);
       return false;
     }
@@ -157,7 +151,9 @@ const CreateAccount = ({ navigation }: any) => {
             )}
 
             {!isValidEmail && (
-              <Text className="my-3">already have an account?</Text>
+              <Text className="mb-4 mt-2 text-gray-400">
+                already have an account?
+              </Text>
             )}
           </View>
         </View>

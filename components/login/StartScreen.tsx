@@ -5,9 +5,14 @@ import colors from "../../config/colors";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/auth";
 import "@react-native-firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../../store/loadingSlice";
 
 const StartScreen = ({ navigation }: any) => {
+  const dispatch = useDispatch();
+
   const handleGuestLogin = async () => {
+    dispatch(setLoading(true));
     await firebase
       .auth()
       .signInAnonymously()
@@ -20,6 +25,7 @@ const StartScreen = ({ navigation }: any) => {
         }
         console.error(error);
       });
+    dispatch(setLoading(false));
   };
   return (
     <SafeScreenView>
