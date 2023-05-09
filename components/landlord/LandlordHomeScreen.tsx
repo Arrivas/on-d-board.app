@@ -1,35 +1,33 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  ScrollView,
-  TouchableNativeFeedback,
-} from "react-native";
+import { View, Text, ScrollView, TouchableNativeFeedback } from "react-native";
 import React, { useEffect, useState } from "react";
-import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/firestore";
 import { Apartments } from "../../App";
 import { fetchApartments } from "../../functions/fetchApartments";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
 import SafeScreenView from "../SafeScreenView";
 import LandlordApartmentCard from "./home/LandlordApartmentCard";
 import Icon from "../Icon";
+import { setApartments } from "../../store/apartmentsSlice";
+import { setLoading } from "../../store/loadingSlice";
 
 const LandlordHomeScreen = ({ navigation }: any) => {
   const user = useSelector((state: RootState) => state.user);
+  const apartments = useSelector(
+    (state: RootState) => state.apartments.apartments
+  );
   const { apartmentIds } = user.user;
-  const [apartments, setApartments] = useState<Apartments[]>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setLoading(true));
     let isMounted = true;
     if (isMounted) {
       fetchApartments(undefined, apartmentIds).then((res) =>
-        setApartments(res)
+        dispatch(setApartments(res))
       );
     }
-
+    dispatch(setLoading(false));
     return () => {
       isMounted = false;
     };
@@ -41,10 +39,10 @@ const LandlordHomeScreen = ({ navigation }: any) => {
         <Text className="font-bold text-2xl">My Apartments</Text>
         <View className="mt-5">
           <ScrollView>
-            {apartments?.map((item) => {
+            {apartments?.map((item: Apartments, index: number) => {
               return (
                 <LandlordApartmentCard
-                  key={item.docId}
+                  key={index}
                   item={item}
                   navigation={navigation}
                 />

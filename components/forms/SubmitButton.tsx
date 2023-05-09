@@ -12,12 +12,7 @@ import {
 import { useFormikContext } from "formik";
 import colors from "../../config/colors";
 import Icon from "../Icon";
-import getDimensions from "../../config/getDimensions";
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from "../../config/metrics";
+import { moderateScale } from "../../config/metrics";
 
 interface SubmitButtonProps {
   title: string;
@@ -43,7 +38,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   extraStyle,
 }) => {
   const { handleSubmit } = useFormikContext();
-  const { width } = getDimensions();
+
   return (
     <TouchableNativeFeedback
       background={TouchableNativeFeedback.Ripple("#eee", false)}

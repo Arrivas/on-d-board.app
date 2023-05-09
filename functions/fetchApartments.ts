@@ -7,7 +7,6 @@ const fetchApartments = async (
   ids?: string[]
 ): Promise<Apartments[]> => {
   let results: Apartments[] = [];
-
   const query = count
     ? firebase.firestore().collection("apartments").limit(count)
     : firebase.firestore().collection("apartments");

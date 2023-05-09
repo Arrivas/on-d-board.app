@@ -8,7 +8,6 @@ import {
   TouchableNativeFeedback,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Apartments } from "../../App";
 import getDimensions from "../../config/getDimensions";
 import Icon from "../Icon";
 import SafeScreenView from "../SafeScreenView";
@@ -94,13 +93,12 @@ const UserHomeScreen = ({ navigation }: any) => {
                   contentContainerStyle={{ flexGrow: 0 }}
                   showsHorizontalScrollIndicator={false}
                 >
-                  {apartments.map((item) => {
-                    const { docId } = item;
+                  {apartments.map((item, index) => {
                     return (
                       <AppartmentsCard
                         apartmentDetails={item}
                         navigation={navigation}
-                        key={docId}
+                        key={index}
                       />
                     );
                   })}

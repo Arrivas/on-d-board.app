@@ -15,7 +15,7 @@ const LandlordApartmentCard: React.FC<LandlordApartmentCardProps> = ({
 }) => {
   const { apartmentInfo, docId } = item;
   return (
-    <View className="bg-gray-100 flex-row rounded-md mb-2" key={docId}>
+    <View className="bg-gray-100 flex-row rounded-md mb-2">
       <View className="h-[120px] w-[120px]">
         <Image
           className="rounded-md w-auto h-[120px] rounded-r-none"

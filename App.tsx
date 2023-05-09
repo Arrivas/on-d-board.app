@@ -7,7 +7,6 @@ export interface Bedspaces {
       isDoubleDeck: boolean;
       location: string;
     };
-    imageName: string;
     imgUrl: string;
     isAvailable: boolean;
     price: number;
@@ -36,6 +35,16 @@ export interface ApartmentSpecificationsProps {
   additionalStyle?: string;
 }
 
+export interface Amenities {
+  offering: boolean;
+  value: string;
+}
+
+export interface Specifications {
+  bathroomCount: string;
+  bedspace: string | number;
+}
+
 export interface Apartments {
   apartmentInfo: {
     address: string;
@@ -55,9 +64,8 @@ export interface Apartments {
     contactNo: string;
     ownerName: string;
   };
-
+  specifications: Specifications;
   amenities: Amenities[];
-
   docId: string;
 }
 

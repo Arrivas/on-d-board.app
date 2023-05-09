@@ -1,6 +1,6 @@
 import { View, Text, TouchableNativeFeedback } from "react-native";
 import React from "react";
-import FormikField from "../forms/FormikFiel";
+import FormikField from "../forms/FormikField";
 import AppFormField from "../forms/AppFormField";
 import SubmitButton from "../forms/SubmitButton";
 import * as Yup from "yup";
