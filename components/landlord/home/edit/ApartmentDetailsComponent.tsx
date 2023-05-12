@@ -4,6 +4,7 @@ import {
   TouchableNativeFeedback,
   Image,
   ScrollView,
+  ToastAndroid,
 } from "react-native";
 import React from "react";
 import FormikField from "../../../forms/FormikField";
@@ -124,6 +125,7 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
         .update(toSubmitObj);
       apartmentsCopy[index] = toSubmitObj;
       dispatch(setApartments(apartmentsCopy));
+      ToastAndroid.show("updated successfully", ToastAndroid.SHORT);
     } catch (error) {
       dispatch(setLoading(false));
       console.log(error);

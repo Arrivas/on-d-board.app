@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import colors from "../../../../config/colors";
-import { verticalScale } from "../../../../config/metrics";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/storage";
@@ -15,11 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setApartments } from "../../../../store/apartmentsSlice";
 import { RootState } from "../../../../store";
 import { setLoading } from "../../../../store/loadingSlice";
-
-interface SelectedImage {
-  uri?: string;
-  name?: string | undefined | null;
-}
+import { SelectedImage } from "../../../../App";
 
 const EditFrontImage = ({ route, navigation }: any) => {
   const { imageUrl, docId, apartmentName } = route.params;

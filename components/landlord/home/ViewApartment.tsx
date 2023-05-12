@@ -4,16 +4,14 @@ import SafeScreenView from "../../SafeScreenView";
 import Icon from "../../Icon";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { Apartments } from "../../../App";
 
 const ViewApartment = ({ route, navigation }: any) => {
   const { item } = route.params;
-  const { apartmentInfo, specifications, docId } = item;
+  const { apartmentInfo, docId } = item;
   const apartments = useSelector(
     (state: RootState) => state.apartments.apartments
   );
   const currentApartment = apartments?.find((item) => item.docId === docId);
-  const bedspaceCount = currentApartment?.specifications.bedspace;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -59,7 +57,7 @@ const ViewApartment = ({ route, navigation }: any) => {
             <TouchableNativeFeedback
               onPress={() =>
                 navigation.navigate("EditBedspace", {
-                  maxBedspaceCount: bedspaceCount,
+                  apartmentDocId: docId,
                 })
               }
             >

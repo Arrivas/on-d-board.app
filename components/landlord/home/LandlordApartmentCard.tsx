@@ -1,4 +1,10 @@
-import { View, Text, Image, TouchableNativeFeedback } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableNativeFeedback,
+  ToastAndroid,
+} from "react-native";
 import React from "react";
 import Icon from "../../Icon";
 import colors from "../../../config/colors";
@@ -7,13 +13,19 @@ import { Apartments } from "../../../App";
 interface LandlordApartmentCardProps {
   item: Apartments;
   navigation?: any;
+  handleRemoveApartment: (
+    apartmentRoomsId: string | undefined,
+    currentDocId: string
+  ) => void;
 }
 
 const LandlordApartmentCard: React.FC<LandlordApartmentCardProps> = ({
   item,
   navigation,
+  handleRemoveApartment,
 }) => {
-  const { apartmentInfo, docId } = item;
+  const { apartmentInfo, docId, apartmentRoomsId } = item;
+
   return (
     <View className="bg-gray-100 flex-row rounded-md mb-2">
       <View className="h-[120px] w-[120px]">
@@ -31,7 +43,9 @@ const LandlordApartmentCard: React.FC<LandlordApartmentCardProps> = ({
         </View>
         {/* bototm button */}
         <View className="flex-row py-2 ">
-          <TouchableNativeFeedback>
+          <TouchableNativeFeedback
+            onPress={() => handleRemoveApartment(apartmentRoomsId, docId)}
+          >
             <View className="p-3 flex-1 flex-row items-center justify-center mr-1 space-x-1 bg-[#B30000] rounded-md">
               <Icon ionName="trash" iconLibrary="IonIcons" color="white" />
               <Text className="font-semibold text-white">remove</Text>

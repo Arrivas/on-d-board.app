@@ -5,13 +5,20 @@ export interface Bedspaces {
   bedspace: {
     bedInformation: {
       isDoubleDeck: boolean;
-      location: string;
+      location?: string;
     };
     imgUrl: string;
-    isAvailable: boolean;
-    price: number;
+    isAvailable: boolean | undefined;
+    price: number | string;
     name: string;
+    dateUntillAvailable?: string | Date;
   };
+  docId?: string;
+}
+
+export interface SelectedImage {
+  uri?: string;
+  name?: string | undefined | null;
 }
 
 export interface UserSliceInitialState {
@@ -67,6 +74,7 @@ export interface Apartments {
   specifications: Specifications;
   amenities: Amenities[];
   docId: string;
+  apartmentRoomsId?: string;
 }
 
 export type LocationObject = {
