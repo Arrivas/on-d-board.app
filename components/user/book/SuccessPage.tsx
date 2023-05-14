@@ -8,7 +8,7 @@ import getDimensions from "../../../config/getDimensions";
 import colors from "../../../config/colors";
 
 const SuccessPage = ({ route, navigation }: any) => {
-  const { ongoing } = route.params;
+  const { ongoing } = route?.params;
   const { docId } = ongoing;
   const { price, name, apartmentName } = ongoing.bookingDetails;
   const { firstName, lastName, phoneNumber } = ongoing.tenantDetails;
@@ -69,7 +69,7 @@ const SuccessPage = ({ route, navigation }: any) => {
                 <View className=" flex-row my-1">
                   <Text className="flex-1 font-semibold">Booking Time</Text>
                   <Text className="flex-1 text-right">
-                    {Moment(new Date()).format("LLLL")}
+                    {Moment(new Date(ongoing.createdAt)).format("LLLL")}
                   </Text>
                 </View>
 
@@ -102,7 +102,7 @@ const SuccessPage = ({ route, navigation }: any) => {
         </View>
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("#eee", false)}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.replace("UserTab", { screen: "Home" })}
         >
           <View
             className="my-4 rounded-md p-2"

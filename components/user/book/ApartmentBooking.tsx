@@ -66,14 +66,6 @@ const ApartmentBooking = ({ route, navigation }: any) => {
 
   const handleBook = async () => {
     const ongoing: any = {
-      apartmentRoomsId,
-      tenantDetails: {
-        imageUrl: user?.imageUrl,
-        firstName: user?.firstName,
-        lastName: user?.lastName,
-        phoneNumber: user?.phoneNumber,
-        uid: user?.uid,
-      },
       bookingDetails: {
         apartmentName: selectedBedspace?.bedspace.apartmentName,
         bedInformation: selectedBedspace?.bedspace.bedInformation,
@@ -81,6 +73,14 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         name: selectedBedspace?.bedspace.name,
         price: selectedBedspace?.bedspace.price,
       },
+      tenantDetails: {
+        imageUrl: user?.imageUrl,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        phoneNumber: user?.phoneNumber,
+        uid: user?.uid,
+      },
+      apartmentRoomsId,
     };
 
     await firebase
@@ -88,7 +88,15 @@ const ApartmentBooking = ({ route, navigation }: any) => {
       .collection("tenants")
       .doc(user.docId)
       .collection("bookings")
-      .add(ongoing);
+      .add(ongoing)
+      .then((res) => {
+        res.update({
+          docId: res.id,
+          createdAt: new Date(
+            firebase.firestore.Timestamp.now().seconds * 1000
+          ).toISOString(),
+        });
+      });
 
     dispatch(addBooking(ongoing));
 

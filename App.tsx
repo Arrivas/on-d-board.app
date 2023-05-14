@@ -26,6 +26,7 @@ export interface BookingSliceState {
   bookings: {
     apartmentRoomsId: string;
     bookingDetails: {
+      apartmentName: string;
       bedInformation: {
         isDoubleDeck: boolean;
         location: string;
@@ -41,6 +42,8 @@ export interface BookingSliceState {
       phoneNumber: string;
       uid: string;
     };
+    docId: string;
+    createdAt: string;
   }[];
 }
 
