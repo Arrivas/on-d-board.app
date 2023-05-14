@@ -3,6 +3,7 @@ import Providers from "./components/Providers";
 import Routes from "./navigation/Routes";
 export interface Bedspaces {
   bedspace: {
+    apartmentName: "";
     bedInformation: {
       isDoubleDeck: boolean;
       location?: string;
@@ -21,8 +22,41 @@ export interface SelectedImage {
   name?: string | undefined | null;
 }
 
+export interface BookingSliceState {
+  bookings: {
+    apartmentRoomsId: string;
+    bookingDetails: {
+      bedInformation: {
+        isDoubleDeck: boolean;
+        location: string;
+      };
+      imgUrl: string;
+      name: string;
+      price: string | number;
+    };
+    tenantDetails: {
+      firstName: string;
+      imageUrl: string;
+      lastName: string;
+      phoneNumber: string;
+      uid: string;
+    };
+  }[];
+}
+
 export interface UserSliceInitialState {
-  user: any;
+  user: {
+    docId: string;
+    email: string;
+    firstName: string;
+    imageUrl: string;
+    lastName: string;
+    password: string;
+    phoneNumber: string | number;
+    uid: string;
+    userType: string;
+    apartmentIds: any;
+  };
 }
 export interface LoadingSliceInitialState {
   loading: boolean;
@@ -66,13 +100,13 @@ export interface Apartments {
       to: string;
     };
     description: string;
+    amenities: Amenities[];
   };
   landlordInfo: {
     contactNo: string;
     ownerName: string;
   };
   specifications: Specifications;
-  amenities: Amenities[];
   docId: string;
   apartmentRoomsId?: string;
 }

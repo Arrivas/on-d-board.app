@@ -18,9 +18,7 @@ import SubmitButton from "../../../forms/SubmitButton";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/storage";
 import { useDispatch, useSelector } from "react-redux";
-import apartmentsSlice, {
-  setApartments,
-} from "../../../../store/apartmentsSlice";
+import { setApartments } from "../../../../store/apartmentsSlice";
 import { RootState } from "../../../../store";
 import { setLoading } from "../../../../store/loadingSlice";
 
@@ -159,8 +157,7 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
             <Text className="font-semibold mb-1">Address</Text>
             <AppFormField
               name="address"
-              placeholder="description"
-              description={true}
+              placeholder="address"
               useBorder={true}
               textInputViewClass="bg-white"
             />
@@ -214,7 +211,6 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
                 <AppFormField
                   name="priceFrom"
                   placeholder="min"
-                  description={true}
                   useBorder={true}
                   textInputViewClass="bg-white"
                 />
@@ -224,7 +220,6 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
                 <AppFormField
                   name="priceTo"
                   placeholder="max"
-                  description={true}
                   useBorder={true}
                   textInputViewClass="bg-white"
                 />
@@ -239,7 +234,6 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
                 <AppFormField
                   name="bathroomCount"
                   placeholder="bathroom count"
-                  description={true}
                   useBorder={true}
                   textInputViewClass="bg-white"
                 />
@@ -249,7 +243,6 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
                 <AppFormField
                   name="bedspace"
                   placeholder="bedspace count"
-                  description={true}
                   useBorder={true}
                   textInputViewClass="bg-white"
                 />
@@ -269,7 +262,6 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
               <AppFormField
                 name="ownerName"
                 placeholder="onwer name"
-                description={true}
                 useBorder={true}
                 textInputViewClass="bg-white"
               />
@@ -277,7 +269,6 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
               <AppFormField
                 name="landlordContact"
                 placeholder="contact no."
-                description={true}
                 useBorder={true}
                 textInputViewClass="bg-white"
               />

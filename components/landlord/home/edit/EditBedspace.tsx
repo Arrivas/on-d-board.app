@@ -15,7 +15,6 @@ import SelectBedType from "./bed/SelectBedType";
 import * as ImagePicker from "expo-image-picker";
 import SelectBedLocation from "./bed/SelectBedLocation";
 import { formatAsCurrency } from "../../../../functions/formatAsCurrency";
-// import ErrorMessage from '../../../forms/'
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/storage";
 import { setApartments } from "../../../../store/apartmentsSlice";
@@ -25,6 +24,7 @@ import { useSelector } from "react-redux";
 import BedspacesItem from "./BedspacesItem";
 import { uploadImagesToFirebase } from "../../../../functions/uploadImagesToFirebase";
 import { setLoading } from "../../../../store/loadingSlice";
+import ErrorMessage from "../../../forms/ErrorMessage";
 
 const EditBedspace = ({ route, navigation }: any) => {
   const { apartmentDocId } = route.params;
@@ -44,7 +44,8 @@ const EditBedspace = ({ route, navigation }: any) => {
   const [selectedBedspace, setSelectedBedspace] = useState<
     Bedspaces | undefined
   >(undefined);
-  const [inputPrice, setInputPrice] = useState<string>(minPrice);
+  const [inputPrice, setInputPrice] = useState<string>("0");
+  const [imageError, setImageError] = useState("");
   const dispatch = useDispatch();
 
   const fetchBedspace = async (): Promise<Bedspaces[] | [] | undefined> => {
@@ -66,7 +67,8 @@ const EditBedspace = ({ route, navigation }: any) => {
     let isMounted = true;
     if (isMounted) {
       fetchBedspace().then((res: any) => {
-        setBedspaces(res.bedspaces);
+        if (res === undefined) return setBedspaces([]);
+        setBedspaces(res?.bedspaces);
       });
     }
     dispatch(setLoading(false));
@@ -87,11 +89,26 @@ const EditBedspace = ({ route, navigation }: any) => {
         name: item.bedspace.imgUrl?.split("/").pop(),
       };
     });
+    let hasError = "";
+    bedspacesCopy.forEach((item) => {
+      if (item.bedspace.price > maxPrice) {
+        item.bedspace.price = maxPrice;
+      }
+      if (item.bedspace.imgUrl === "") {
+        dispatch(setLoading(false));
+        hasError = "please select image";
+      }
+    });
+
+    if (hasError) {
+      dispatch(setLoading(false));
+      return setImageError(hasError);
+    }
 
     const updatedBedspaces = await Promise.all(
       bedspacesCopy.map(async (bedspace, index) => {
-        const image = images[index];
-        if (image !== undefined) {
+        const image: any = images[index];
+        if (image.uri !== "") {
           const imageUrl = await uploadImagesToFirebase([image], apartmentName);
           return {
             ...bedspace,
@@ -109,20 +126,26 @@ const EditBedspace = ({ route, navigation }: any) => {
 
     setBedspaces(updatedBedspaces as Bedspaces[]);
     if (apartmentRoomsId === "" || apartmentRoomsId === undefined) {
-      firebase
+      await firebase
         .firestore()
         .collection("apartmentRooms")
         .add({ bedspaces: updatedBedspaces })
-        .then((res) => {
+        .then(async (res) => {
           res.update({ docId: res.id });
           const apartmentsCopy = [...apartments];
           const index = apartmentsCopy.findIndex(
             (item) => item.docId === apartmentDocId
           );
-          apartmentsCopy[index].apartmentRoomsId = res.id;
-          apartmentsCopy[index] = currentApartment as Apartments;
-          dispatch(setApartments(apartmentsCopy));
-          firebase
+
+          if (index !== -1) {
+            apartmentsCopy[index] = {
+              ...apartmentsCopy[index],
+              apartmentRoomsId: res.id,
+            };
+            const updatedApartments = [...apartmentsCopy];
+            dispatch(setApartments(updatedApartments));
+          }
+          await firebase
             .firestore()
             .collection("apartments")
             .doc(apartmentDocId)
@@ -131,7 +154,7 @@ const EditBedspace = ({ route, navigation }: any) => {
         })
         .catch((err) => console.log(err));
     } else {
-      firebase
+      await firebase
         .firestore()
         .collection("apartmentRooms")
         .doc(apartmentRoomsId)
@@ -150,6 +173,7 @@ const EditBedspace = ({ route, navigation }: any) => {
       const bedspaceCopy = [...prevBedspaces];
       bedspaceCopy.push({
         bedspace: {
+          apartmentName,
           bedInformation: {
             isDoubleDeck: false,
             location: "",
@@ -157,9 +181,9 @@ const EditBedspace = ({ route, navigation }: any) => {
           imgUrl: "",
           isAvailable: true,
           name: `bedspace${bedspaceCopy.length + 1}`,
-          price: 0,
+          price: minPrice,
         },
-      });
+      } as Bedspaces);
       return bedspaceCopy;
     });
   };
@@ -171,6 +195,7 @@ const EditBedspace = ({ route, navigation }: any) => {
     });
 
     if (!result.canceled) {
+      setImageError("");
       // setSelectedImage({
       //   uri: result.assets[0].uri,
       //   name: result.assets[0].uri.split("/").pop(),
@@ -207,10 +232,11 @@ const EditBedspace = ({ route, navigation }: any) => {
               <BedspacesItem
                 item={item}
                 bedspaces={bedspaces}
-                selectedBedspace={selectedBedspace}
-                setBedspaces={setBedspaces}
-                setSelectedBedspace={setSelectedBedspace}
                 key={item?.bedspace.name}
+                setBedspaces={setBedspaces}
+                setInputPrice={setInputPrice}
+                selectedBedspace={selectedBedspace}
+                setSelectedBedspace={setSelectedBedspace}
               />
             ))}
             {/* add button */}
@@ -228,7 +254,7 @@ const EditBedspace = ({ route, navigation }: any) => {
           style={{
             flex: 1,
           }}
-          className="border-t border-gray-200"
+          className="border-t border-gray-200 pt-2"
         >
           <ScrollView
             contentContainerStyle={{
@@ -238,26 +264,29 @@ const EditBedspace = ({ route, navigation }: any) => {
           >
             {selectedBedspace !== undefined && (
               <>
-                <View className="flex-row items-center justify-between">
-                  <Text className="font-bold">
-                    {selectedBedspace?.bedspace.name}
-                  </Text>
-                  <TouchableNativeFeedback onPress={handleDelete}>
-                    <View className="p-4 rounded-md self-start">
-                      <Icon
-                        featherName="trash-2"
-                        iconLibrary="Feather"
-                        size={20}
-                      />
-                    </View>
-                  </TouchableNativeFeedback>
-                </View>
+                {bedspaces.length > 1 && (
+                  <View className="flex-row items-center justify-between">
+                    <Text className="font-bold">
+                      {selectedBedspace?.bedspace.name}
+                    </Text>
+                    <TouchableNativeFeedback onPress={handleDelete}>
+                      <View className="p-4 rounded-md self-start">
+                        <Icon
+                          featherName="trash-2"
+                          iconLibrary="Feather"
+                          size={20}
+                        />
+                      </View>
+                    </TouchableNativeFeedback>
+                  </View>
+                )}
                 {/* image */}
                 <View className="h-[250px] w-full">
                   {selectedBedspace.bedspace.imgUrl !== "" ? (
                     <TouchableNativeFeedback onPress={pickImageAsync}>
                       <Image
                         className="w-auto h-full rounded-md"
+                        resizeMode="contain"
                         source={{ uri: selectedBedspace.bedspace.imgUrl }}
                       />
                     </TouchableNativeFeedback>
@@ -275,6 +304,9 @@ const EditBedspace = ({ route, navigation }: any) => {
                     </TouchableNativeFeedback>
                   )}
                 </View>
+                {imageError && selectedBedspace.bedspace.imgUrl === "" && (
+                  <ErrorMessage error={imageError} />
+                )}
                 {/* bed type */}
                 <SelectBedType
                   selectedBedspace={selectedBedspace}
@@ -307,7 +339,8 @@ const EditBedspace = ({ route, navigation }: any) => {
                     onChangeText={(text) => {
                       const selectedBedspaceCopy = { ...selectedBedspace };
                       selectedBedspace.bedspace.price = text;
-                      if (Number(text) > Number(maxPrice)) return;
+                      if (Number(text) > Number(maxPrice))
+                        return setInputPrice(maxPrice);
                       setSelectedBedspace(selectedBedspaceCopy);
                       setInputPrice(text);
                     }}

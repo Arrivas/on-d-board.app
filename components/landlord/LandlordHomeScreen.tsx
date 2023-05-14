@@ -82,7 +82,13 @@ const LandlordHomeScreen = ({ navigation }: any) => {
                 />
               );
             })}
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() =>
+                navigation.navigate("LandlordApartmentStack", {
+                  screen: "NewApartment",
+                })
+              }
+            >
               <View className="flex-row items-center bg-gray-100 w-full p-5 rounded-md">
                 <Icon antName="plus" iconLibrary="AntDesign" />
                 <Text className="font-semibold">add apartment</Text>

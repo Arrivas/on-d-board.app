@@ -10,7 +10,7 @@ import colors from "../../../config/colors";
 const SuccessPage = ({ route, navigation }: any) => {
   const { ongoing } = route.params;
   const { docId } = ongoing;
-  const { price, name } = ongoing.bookingDetails;
+  const { price, name, apartmentName } = ongoing.bookingDetails;
   const { firstName, lastName, phoneNumber } = ongoing.tenantDetails;
   const { height } = getDimensions();
 
@@ -57,6 +57,10 @@ const SuccessPage = ({ route, navigation }: any) => {
                   </Text>
                 </View>
                 <View className=" flex-row my-1">
+                  <Text className="flex-1 font-semibold">Apartment Name</Text>
+                  <Text className="flex-1 text-right">{apartmentName}</Text>
+                </View>
+                <View className=" flex-row my-1">
                   <Text className="flex-1 font-semibold">
                     Selected Bedspace
                   </Text>
@@ -68,6 +72,7 @@ const SuccessPage = ({ route, navigation }: any) => {
                     {Moment(new Date()).format("LLLL")}
                   </Text>
                 </View>
+
                 <View className=" flex-row my-1">
                   <Text className="flex-1 font-semibold">Price</Text>
                   <Text className="flex-1 text-right">
@@ -90,12 +95,6 @@ const SuccessPage = ({ route, navigation }: any) => {
                 <View className=" flex-row my-1">
                   <Text className="flex-1 font-semibold">Phone#</Text>
                   <Text className="flex-1 text-right">{phoneNumber}</Text>
-                </View>
-                <View className=" flex-row my-1">
-                  <Text className="flex-1 font-semibold">Price</Text>
-                  <Text className="flex-1 text-right">
-                    {formatAsCurrency(price)}
-                  </Text>
                 </View>
               </View>
             </View>

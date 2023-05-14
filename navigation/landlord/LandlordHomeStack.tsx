@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandlordHomeScreen from "../../components/landlord/LandlordHomeScreen";
+import NewApartment from "../../components/landlord/home/newApartment/NewApartment";
 
 const Stack = createNativeStackNavigator();
 

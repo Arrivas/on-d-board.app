@@ -80,7 +80,7 @@ const InputText: React.FC<AppTextInputProps> = ({
           paddingHorizontal: width >= 500 ? width * 0.025 : width * 0.035,
         }}
         value={value}
-        numberOfLines={description ? 2 : 1}
+        numberOfLines={description ? 3 : 1}
         multiline={description}
         clearButtonMode="always"
         secureTextEntry={isPassword ? !showPassword : showPassword}

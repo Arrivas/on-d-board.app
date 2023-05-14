@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, KeyboardType } from "react-native";
 import { useFormikContext } from "formik";
 import AppTextInput from "./AppTextInput";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -17,6 +17,7 @@ interface AppFormFieldProps {
   isPassword?: boolean;
   useBorder?: boolean;
   textInputViewClass?: string;
+  keyboardType?: KeyboardType;
 }
 
 const AppFormField: React.FC<AppFormFieldProps> = ({
@@ -32,6 +33,7 @@ const AppFormField: React.FC<AppFormFieldProps> = ({
   isPassword,
   useBorder,
   textInputViewClass,
+  keyboardType,
   ...rest
 }) => {
   const { setFieldTouched, handleChange, errors, touched, values }: any =
@@ -40,6 +42,7 @@ const AppFormField: React.FC<AppFormFieldProps> = ({
   return (
     <View className={containerStyle}>
       <AppTextInput
+        keyboardType={keyboardType}
         textInputViewClass={textInputViewClass}
         useBorder={useBorder}
         isPassword={isPassword}

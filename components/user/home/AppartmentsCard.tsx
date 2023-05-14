@@ -19,7 +19,7 @@ const AppartmentsCard: React.FC<AppartmentsCardProps> = ({
       }
     >
       <View
-        className="self-start mr-2 h-full bg-white object-contain"
+        className="self-start mr-2 bg-white object-contain"
         style={{
           width: horizontalScale(160),
         }}

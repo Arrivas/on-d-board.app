@@ -11,6 +11,7 @@ interface BedspaceItemProps {
   setBedspaces: React.Dispatch<React.SetStateAction<Bedspaces[]>>;
   item: Bedspaces;
   bedspaces: Bedspaces[];
+  setInputPrice: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const BedspacesItem: React.FC<BedspaceItemProps> = ({
@@ -19,6 +20,7 @@ const BedspacesItem: React.FC<BedspaceItemProps> = ({
   setSelectedBedspace,
   item,
   bedspaces,
+  setInputPrice,
 }) => {
   const isObjectNotEmpty = (obj: any): boolean => {
     return obj !== undefined && obj !== null && Object.keys(obj).length !== 0;
@@ -27,16 +29,17 @@ const BedspacesItem: React.FC<BedspaceItemProps> = ({
     <TouchableNativeFeedback
       background={TouchableNativeFeedback.Ripple("#eee", false)}
       onPress={() => {
-        const isSelectedAvailable = isObjectNotEmpty(selectedBedspace);
+        setSelectedBedspace(item);
+        const isSelectedAvailable = isObjectNotEmpty(item);
         if (isSelectedAvailable) {
           const bedspaceCopy = [...bedspaces];
           const index = bedspaceCopy.findIndex(
-            (item) => item.bedspace.name === selectedBedspace!.bedspace.name
+            (bedspaceItem) => bedspaceItem.bedspace.name === item.bedspace.name
           );
-          bedspaceCopy[index] = selectedBedspace as Bedspaces;
+          setInputPrice(bedspaceCopy[index].bedspace.price as string);
+          bedspaceCopy[index] = item;
           setBedspaces(bedspaceCopy);
         }
-        setSelectedBedspace(item);
       }}
     >
       <View

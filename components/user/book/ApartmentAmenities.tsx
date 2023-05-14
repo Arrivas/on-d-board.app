@@ -78,7 +78,7 @@ const ApartmentAmenities: React.FC<ApartmentAmenitiesProps> = ({
         <ScrollView horizontal>
           <View className="my-1 flex-row">
             {amenities
-              .filter((item: Amenities) => item.offering)
+              ?.filter((item: Amenities) => item.offering)
               .map((item: Amenities) => (
                 <View
                   key={item.value}

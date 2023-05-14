@@ -18,6 +18,7 @@ import ApartmentSpecifications from "../book/ApartmentSpecifications";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
 import { setLoading } from "../../../store/loadingSlice";
+import { addBooking } from "../../../store/bookingSlice";
 
 const ApartmentBooking = ({ route, navigation }: any) => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -25,12 +26,15 @@ const ApartmentBooking = ({ route, navigation }: any) => {
     null
   );
   const [selectedBedspace, setSelectedBedspace] = useState<Bedspaces>();
-  const { docId } = route.params;
+  const { apartmentRoomsId } = route.params;
   const dispatch = useDispatch();
 
   const fetchBedspaces = async (): Promise<Bedspaces[] | null | undefined> => {
     dispatch(setLoading(true));
-    const query = firebase.firestore().collection("apartmentRooms").doc(docId);
+    const query = firebase
+      .firestore()
+      .collection("apartmentRooms")
+      .doc(apartmentRoomsId);
     try {
       const snapshot = await query.get();
       dispatch(setLoading(false));
@@ -62,7 +66,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
 
   const handleBook = async () => {
     const ongoing: any = {
-      docId,
+      apartmentRoomsId,
       tenantDetails: {
         imageUrl: user?.imageUrl,
         firstName: user?.firstName,
@@ -71,26 +75,37 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         uid: user?.uid,
       },
       bookingDetails: {
+        apartmentName: selectedBedspace?.bedspace.apartmentName,
         bedInformation: selectedBedspace?.bedspace.bedInformation,
         imgUrl: selectedBedspace?.bedspace.imgUrl,
         name: selectedBedspace?.bedspace.name,
         price: selectedBedspace?.bedspace.price,
       },
     };
+
+    await firebase
+      .firestore()
+      .collection("tenants")
+      .doc(user.docId)
+      .collection("bookings")
+      .add(ongoing);
+
+    dispatch(addBooking(ongoing));
+
     dispatch(setLoading(true));
     await firebase
       .firestore()
       .collection("apartmentRooms")
-      .doc(docId)
+      .doc(apartmentRoomsId)
       .collection("bookings")
       .add(ongoing)
       .then((res) => {
         dispatch(setLoading(false));
         res.update({
-          docId: res.id,
+          apartmentRoomsId: res.id,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
-        ongoing.docId = res.id;
+        ongoing.apartmentRoomsId = res.id;
       });
 
     if (bedspaces) {
@@ -107,7 +122,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
     await firebase
       .firestore()
       .collection("apartmentRooms")
-      .doc(docId)
+      .doc(apartmentRoomsId)
       .update({ bedspaces })
       .then(() => {
         navigation.replace("SuccessPage", { ongoing });
@@ -168,6 +183,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
               <Text className="font-semibold mb-1">preview</Text>
               <Image
                 className="w-auto object-cover rounded-md h-[220px]"
+                resizeMode="cover"
                 source={{
                   uri: selectedBedspace?.bedspace?.imgUrl,
                 }}
@@ -223,6 +239,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         </ScrollView>
 
         {/* reserve now */}
+        {/* @ts-ignore */}
         {price && user !== "anonymous" ? (
           <View className="flex-row items-center justify-center space-x-2">
             <TouchableNativeFeedback

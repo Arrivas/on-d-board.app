@@ -79,7 +79,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
         </View>
       ) : mode === "chevronRight" ? (
         <View className="flex-row p-2 self-end items-center">
-          <Text className={`${textClass} text-lg`} style={textStyle}>
+          <Text className={`${textClass} `} style={textStyle}>
             {title}
           </Text>
           <Icon

@@ -2,16 +2,10 @@ import { View, Text, TouchableNativeFeedback, ScrollView } from "react-native";
 import React, { useLayoutEffect } from "react";
 import SafeScreenView from "../../SafeScreenView";
 import Icon from "../../Icon";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store";
 
 const ViewApartment = ({ route, navigation }: any) => {
   const { item } = route.params;
   const { apartmentInfo, docId } = item;
-  const apartments = useSelector(
-    (state: RootState) => state.apartments.apartments
-  );
-  const currentApartment = apartments?.find((item) => item.docId === docId);
 
   useLayoutEffect(() => {
     navigation.setOptions({

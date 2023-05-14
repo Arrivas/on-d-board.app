@@ -15,7 +15,8 @@ import Specifications from "./ApartmentSpecifications";
 
 const ApartmentDetails = ({ route, navigation }: any) => {
   const { apartmentDetails } = route.params;
-  const { apartmentInfo, tenantInfo, specifications, docId } = apartmentDetails;
+  const { apartmentInfo, tenantInfo, specifications, apartmentRoomsId } =
+    apartmentDetails;
   const {
     address,
     imageUrl,
@@ -81,7 +82,9 @@ const ApartmentDetails = ({ route, navigation }: any) => {
             <ApartmentAmenities amenities={amenities} />
           </ScrollView>
           <TouchableNativeFeedback
-            onPress={() => navigation.navigate("ApartmentBooking", { docId })}
+            onPress={() =>
+              navigation.navigate("ApartmentBooking", { apartmentRoomsId })
+            }
             background={TouchableNativeFeedback.Ripple("#EEE", false)}
           >
             <View
