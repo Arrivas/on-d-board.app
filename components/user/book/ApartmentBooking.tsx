@@ -65,13 +65,14 @@ const ApartmentBooking = ({ route, navigation }: any) => {
   const price = selectedBedspace && selectedBedspace?.bedspace.price;
 
   const handleBook = async () => {
-    const ongoing: any = {
+    const pending: any = {
       bookingDetails: {
         apartmentName: selectedBedspace?.bedspace.apartmentName,
         bedInformation: selectedBedspace?.bedspace.bedInformation,
         imgUrl: selectedBedspace?.bedspace.imgUrl,
         name: selectedBedspace?.bedspace.name,
         price: selectedBedspace?.bedspace.price,
+        bookingStatus: "pending",
       },
       tenantDetails: {
         imageUrl: user?.imageUrl,
@@ -88,17 +89,20 @@ const ApartmentBooking = ({ route, navigation }: any) => {
       .collection("tenants")
       .doc(user.docId)
       .collection("bookings")
-      .add(ongoing)
+      .add(pending)
       .then((res) => {
-        res.update({
-          docId: res.id,
-          createdAt: new Date(
-            firebase.firestore.Timestamp.now().seconds * 1000
-          ).toISOString(),
-        });
+        (pending.createdAt = new Date(
+          firebase.firestore.Timestamp.now().seconds * 1000
+        ).toISOString()),
+          res.update({
+            docId: res.id,
+            createdAt: new Date(
+              firebase.firestore.Timestamp.now().seconds * 1000
+            ).toISOString(),
+          });
       });
 
-    dispatch(addBooking(ongoing));
+    dispatch(addBooking(pending));
 
     dispatch(setLoading(true));
     await firebase
@@ -106,14 +110,14 @@ const ApartmentBooking = ({ route, navigation }: any) => {
       .collection("apartmentRooms")
       .doc(apartmentRoomsId)
       .collection("bookings")
-      .add(ongoing)
+      .add(pending)
       .then((res) => {
         dispatch(setLoading(false));
         res.update({
-          apartmentRoomsId: res.id,
+          docId: res.id,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
-        ongoing.apartmentRoomsId = res.id;
+        pending.apartmentRoomsId = res.id;
       });
 
     if (bedspaces) {
@@ -133,7 +137,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
       .doc(apartmentRoomsId)
       .update({ bedspaces })
       .then(() => {
-        navigation.replace("SuccessPage", { ongoing });
+        navigation.replace("SuccessPage", { pending });
       })
       .catch(() => {
         dispatch(setLoading(false));

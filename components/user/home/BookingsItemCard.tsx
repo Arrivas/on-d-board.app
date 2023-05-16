@@ -6,6 +6,7 @@ export interface BookingsItemCardProps {
   bookings: {
     apartmentRoomsId: string;
     bookingDetails: {
+      bookingStatus: string;
       apartmentName: string;
       bedInformation: {
         isDoubleDeck: boolean;
@@ -22,6 +23,7 @@ export interface BookingsItemCardProps {
       phoneNumber: string;
       uid: string;
     };
+    docId: string;
     createdAt: string;
   };
   navigation: any;
@@ -37,7 +39,7 @@ const BookingsItemCard: React.FC<BookingsItemCardProps> = ({
       onPress={() =>
         navigation.replace("BookStack", {
           screen: "SuccessPage",
-          params: { ongoing: bookings },
+          params: { pending: bookings },
         })
       }
     >

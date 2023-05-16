@@ -3,6 +3,8 @@ import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/auth";
 import { store } from "../store";
 import { setUser } from "../store/userSlice";
+import { setBooking } from "../store/bookingSlice";
+import { setApartments } from "../store/apartmentsSlice";
 
 // import {
 //   expoTokenCustomer,
@@ -22,6 +24,8 @@ const logOut = async () => {
     .then(() => console.log("user signed out"))
     .catch((err) => console.log(err.code));
   store.dispatch(setUser(null));
+  store.dispatch(setBooking([]));
+  store.dispatch(setApartments([]));
   await firebase.auth().currentUser?.delete();
   // remove expo token
   // if (user?.userType === 'customer')

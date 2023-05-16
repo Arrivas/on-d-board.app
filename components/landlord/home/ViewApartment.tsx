@@ -1,10 +1,21 @@
 import { View, Text, TouchableNativeFeedback, ScrollView } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import SafeScreenView from "../../SafeScreenView";
 import Icon from "../../Icon";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import colors from "../../../config/colors";
+
+const bookingStatusItems = [
+  { id: 1, label: "Pending" },
+  { id: 2, label: "Ongoing" },
+  { id: 3, label: "Cancelled" },
+  { id: 4, label: "History" },
+];
 
 const ViewApartment = ({ route, navigation }: any) => {
   const { item } = route.params;
+  const bookings = useSelector((state: RootState) => state.booking.bookings);
   const { apartmentInfo, docId } = item;
 
   useLayoutEffect(() => {
@@ -62,7 +73,20 @@ const ViewApartment = ({ route, navigation }: any) => {
             </TouchableNativeFeedback>
           </ScrollView>
         </View>
-        <View className="flex-1"></View>
+        <View className="flex-1 px-5">
+          <Text className="mb-2">Booking Status</Text>
+          <View className="flex-row space-x-2">
+            {bookingStatusItems.map((item) => (
+              <View
+                className="aspect-square flex-1 items-center justify-center bg-[#fafafa]"
+                key={item.id}
+              >
+                <Text>0</Text>
+                <Text className="text-xs text-gray-400">{item.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
       </View>
     </SafeScreenView>
   );

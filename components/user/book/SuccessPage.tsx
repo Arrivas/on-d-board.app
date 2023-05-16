@@ -8,12 +8,11 @@ import getDimensions from "../../../config/getDimensions";
 import colors from "../../../config/colors";
 
 const SuccessPage = ({ route, navigation }: any) => {
-  const { ongoing } = route?.params;
-  const { docId } = ongoing;
-  const { price, name, apartmentName } = ongoing.bookingDetails;
-  const { firstName, lastName, phoneNumber } = ongoing.tenantDetails;
+  const { pending } = route?.params;
+  const { docId } = pending;
+  const { price, name, apartmentName } = pending.bookingDetails;
+  const { firstName, lastName, phoneNumber } = pending.tenantDetails;
   const { height } = getDimensions();
-
   return (
     <SafeScreenView>
       <View className="p-5 bg-[#f5f7fb] flex-1">
@@ -69,7 +68,7 @@ const SuccessPage = ({ route, navigation }: any) => {
                 <View className=" flex-row my-1">
                   <Text className="flex-1 font-semibold">Booking Time</Text>
                   <Text className="flex-1 text-right">
-                    {Moment(new Date(ongoing.createdAt)).format("LLLL")}
+                    {Moment(new Date(pending.createdAt)).format("LLLL")}
                   </Text>
                 </View>
 

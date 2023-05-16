@@ -102,7 +102,7 @@ const UserHomeScreen = ({ navigation }: any) => {
                   >
                     {bookings?.map((item) => (
                       <BookingsItemCard
-                        key={item.apartmentRoomsId}
+                        key={item.docId}
                         bookings={item}
                         navigation={navigation}
                       />

@@ -83,7 +83,7 @@ const EditBedspace = ({ route, navigation }: any) => {
     const bedspacesCopy = [...bedspaces];
     const images = bedspacesCopy?.map((item) => {
       if (item.bedspace?.imgUrl.indexOf("on-d-board.appspot.com") !== -1)
-        return;
+        return { uri: null, name: null };
       return {
         uri: item.bedspace?.imgUrl,
         name: item.bedspace.imgUrl?.split("/").pop(),
@@ -104,11 +104,11 @@ const EditBedspace = ({ route, navigation }: any) => {
       dispatch(setLoading(false));
       return setImageError(hasError);
     }
-
     const updatedBedspaces = await Promise.all(
       bedspacesCopy.map(async (bedspace, index) => {
         const image: any = images[index];
-        if (image.uri !== "") {
+        if (image.uri === null) return { ...bedspace };
+        if (image?.uri !== null || image?.uri !== "") {
           const imageUrl = await uploadImagesToFirebase([image], apartmentName);
           return {
             ...bedspace,
@@ -118,12 +118,8 @@ const EditBedspace = ({ route, navigation }: any) => {
             },
           };
         }
-        return {
-          ...bedspace,
-        };
       })
     );
-
     setBedspaces(updatedBedspaces as Bedspaces[]);
     if (apartmentRoomsId === "" || apartmentRoomsId === undefined) {
       await firebase
@@ -358,16 +354,14 @@ const EditBedspace = ({ route, navigation }: any) => {
             )}
           </ScrollView>
         </View>
-        {selectedBedspace !== undefined && (
-          <TouchableNativeFeedback
-            onPress={handleSave}
-            background={TouchableNativeFeedback.Ripple("#b3b3b3", false)}
-          >
-            <View className="p-3 roudned-md self-end">
-              <Text>Save</Text>
-            </View>
-          </TouchableNativeFeedback>
-        )}
+        <TouchableNativeFeedback
+          onPress={handleSave}
+          background={TouchableNativeFeedback.Ripple("#b3b3b3", false)}
+        >
+          <View className="p-3 roudned-md self-end">
+            <Text>Save</Text>
+          </View>
+        </TouchableNativeFeedback>
       </View>
     </SafeScreenView>
   );

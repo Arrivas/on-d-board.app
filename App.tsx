@@ -26,6 +26,7 @@ export interface BookingSliceState {
   bookings: {
     apartmentRoomsId: string;
     bookingDetails: {
+      bookingStatus: string;
       apartmentName: string;
       bedInformation: {
         isDoubleDeck: boolean;

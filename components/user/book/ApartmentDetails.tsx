@@ -17,15 +17,8 @@ const ApartmentDetails = ({ route, navigation }: any) => {
   const { apartmentDetails } = route.params;
   const { apartmentInfo, tenantInfo, specifications, apartmentRoomsId } =
     apartmentDetails;
-  const {
-    address,
-    imageUrl,
-    apartmentName,
-    geoLocation,
-    price,
-    amenities,
-    description,
-  } = apartmentInfo;
+  const { address, imageUrl, apartmentName, price, amenities, description } =
+    apartmentInfo;
 
   return (
     <SafeScreenView>

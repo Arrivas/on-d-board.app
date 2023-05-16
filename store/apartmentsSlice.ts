@@ -14,7 +14,7 @@ const apartmentsSlice = createSlice({
   initialState,
   reducers: {
     setApartments: (state, action: PayloadAction<Apartments[]>) => {
-      state.apartments = action.payload;
+      state.apartments = action.payload as Apartments[];
     },
   },
 });
