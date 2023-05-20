@@ -4,6 +4,7 @@ import EditApartmentDetails from "../../components/landlord/home/EditApartmentDe
 import EditFrontImage from "../../components/landlord/home/edit/EditFrontImage";
 import EditBedspace from "../../components/landlord/home/edit/EditBedspace";
 import NewApartment from "../../components/landlord/home/newApartment/NewApartment";
+import MyBookings from "../../components/landlord/home/myBookings/MyBookings";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,11 @@ const LandlordApartmentStack = () => (
       name="NewApartment"
       component={NewApartment}
       options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="MyBookings"
+      component={MyBookings}
+      options={{ title: "My Bookings", headerShadowVisible: false }}
     />
   </Stack.Navigator>
 );

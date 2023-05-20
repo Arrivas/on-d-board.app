@@ -3,14 +3,24 @@ import "@react-native-firebase/firestore";
 import { BookingSliceState } from "../App";
 
 const fetchBookings = async (
-  userDocId: string
+  userDocId: string,
+  mode = "user"
 ): Promise<BookingSliceState[]> => {
   const results: BookingSliceState[] = [];
-  await firebase
-    .firestore()
-    .collection("tenants")
-    .doc(userDocId)
-    .collection("bookings")
+  const query =
+    mode === "user"
+      ? firebase
+          .firestore()
+          .collection("tenants")
+          .doc(userDocId)
+          .collection("bookings")
+      : firebase
+          .firestore()
+          .collection("apartmentRooms")
+          .doc(userDocId)
+          .collection("bookings");
+
+  await query
     .get()
     .then((data) => {
       if (data.empty) return;

@@ -22,9 +22,37 @@ export interface SelectedImage {
   name?: string | undefined | null;
 }
 
+export interface BookingItems {
+  bookingDetails: {
+    bookingStatus: string;
+    apartmentName: string;
+    bedInformation: {
+      isDoubleDeck: boolean;
+      location: string;
+    };
+    imgUrl: string;
+    name: string;
+    price: string | number;
+    cancelledBy?: string;
+    cancellationDate?: string;
+  };
+  tenantDetails: {
+    firstName: string;
+    imageUrl: string;
+    lastName: string;
+    phoneNumber: string;
+    uid: string;
+  };
+  apartmentRoomsId: string;
+  apartmentBookDocId: string;
+  tenantBookDocId: string;
+  showState?: boolean;
+  docId: string;
+  createdAt: string;
+}
+
 export interface BookingSliceState {
   bookings: {
-    apartmentRoomsId: string;
     bookingDetails: {
       bookingStatus: string;
       apartmentName: string;
@@ -35,6 +63,8 @@ export interface BookingSliceState {
       imgUrl: string;
       name: string;
       price: string | number;
+      cancelledBy?: string;
+      cancellationDate?: string;
     };
     tenantDetails: {
       firstName: string;
@@ -42,7 +72,12 @@ export interface BookingSliceState {
       lastName: string;
       phoneNumber: string;
       uid: string;
+      tenantDocId: string;
     };
+    apartmentRoomsId: string;
+    apartmentBookDocId: string;
+    tenantBookDocId: string;
+    showState?: boolean;
     docId: string;
     createdAt: string;
   }[];

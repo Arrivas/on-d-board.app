@@ -73,6 +73,8 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         name: selectedBedspace?.bedspace.name,
         price: selectedBedspace?.bedspace.price,
         bookingStatus: "pending",
+        cancelledBy: "",
+        cancellationDate: "",
       },
       tenantDetails: {
         imageUrl: user?.imageUrl,
@@ -80,8 +82,11 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         lastName: user?.lastName,
         phoneNumber: user?.phoneNumber,
         uid: user?.uid,
+        tenantDocId: user?.docId,
       },
       apartmentRoomsId,
+      apartmentBookDocId: "",
+      tenantBookDocId: "",
     };
 
     await firebase
@@ -94,28 +99,34 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         (pending.createdAt = new Date(
           firebase.firestore.Timestamp.now().seconds * 1000
         ).toISOString()),
-          res.update({
-            docId: res.id,
-            createdAt: new Date(
-              firebase.firestore.Timestamp.now().seconds * 1000
-            ).toISOString(),
-          });
+          (pending.tenantBookDocId = res.id);
+        res.update({
+          tenantBookDocId: res.id,
+          createdAt: new Date(
+            firebase.firestore.Timestamp.now().seconds * 1000
+          ).toISOString(),
+        });
       });
 
     dispatch(addBooking(pending));
-
     dispatch(setLoading(true));
+    let apartmentBookDocId = "";
+
     await firebase
       .firestore()
       .collection("apartmentRooms")
       .doc(apartmentRoomsId)
       .collection("bookings")
       .add(pending)
-      .then((res) => {
+      .then(async (res) => {
         dispatch(setLoading(false));
+        apartmentBookDocId = res.id;
+
         res.update({
-          docId: res.id,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          apartmentBookDocId,
+          createdAt: new Date(
+            firebase.firestore.Timestamp.now().seconds * 1000
+          ).toISOString(),
         });
         pending.apartmentRoomsId = res.id;
       });
@@ -130,6 +141,13 @@ const ApartmentBooking = ({ route, navigation }: any) => {
         bedspaces[index].bedspace.isAvailable = false;
       }
     }
+    await firebase
+      .firestore()
+      .collection("tenants")
+      .doc(user.docId)
+      .collection("bookings")
+      .doc(pending.tenantBookDocId)
+      .update({ apartmentBookDocId });
 
     await firebase
       .firestore()
@@ -146,6 +164,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
           ToastAndroid.SHORT
         );
       });
+
     dispatch(setLoading(false));
   };
 

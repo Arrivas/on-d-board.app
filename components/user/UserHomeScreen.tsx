@@ -25,6 +25,7 @@ import { fetchBookings } from "../../functions/fetchBookings";
 import { horizontalScale } from "../../config/metrics";
 import HomeMap from "./home/HomeMap";
 import BookingsItemCard from "./home/BookingsItemCard";
+import { BookingSliceState } from "../../App";
 
 const UserHomeScreen = ({ navigation }: any) => {
   const apartments = useSelector(
@@ -48,6 +49,10 @@ const UserHomeScreen = ({ navigation }: any) => {
       isMounted = false;
     };
   }, []);
+
+  const recentFilteredBookings = bookings.filter((item) => {
+    if (item.bookingDetails.bookingStatus !== "cancelled") return item;
+  });
 
   return (
     <SafeScreenView>
@@ -92,7 +97,7 @@ const UserHomeScreen = ({ navigation }: any) => {
             showsVerticalScrollIndicator={false}
           >
             <View className="flex-1">
-              {bookings?.length !== 0 && (
+              {recentFilteredBookings?.length !== 0 && (
                 <View className="-top-2 p-1">
                   <Text className="font-bold py-2">Recently Booked</Text>
                   <ScrollView
@@ -100,13 +105,15 @@ const UserHomeScreen = ({ navigation }: any) => {
                     contentContainerStyle={{ flexGrow: 0 }}
                     showsHorizontalScrollIndicator={false}
                   >
-                    {bookings?.map((item) => (
-                      <BookingsItemCard
-                        key={item.docId}
-                        bookings={item}
-                        navigation={navigation}
-                      />
-                    ))}
+                    {recentFilteredBookings?.map((item) => {
+                      return (
+                        <BookingsItemCard
+                          key={item.tenantBookDocId}
+                          bookings={item}
+                          navigation={navigation}
+                        />
+                      );
+                    })}
                   </ScrollView>
                 </View>
               )}
@@ -126,7 +133,7 @@ const UserHomeScreen = ({ navigation }: any) => {
                       <AppartmentsCard
                         apartmentDetails={item}
                         navigation={navigation}
-                        key={index}
+                        key={item.docId}
                       />
                     );
                   })}

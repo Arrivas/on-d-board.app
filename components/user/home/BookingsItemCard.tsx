@@ -26,7 +26,7 @@ export interface BookingsItemCardProps {
     docId: string;
     createdAt: string;
   };
-  navigation: any;
+  navigation?: any;
 }
 
 const BookingsItemCard: React.FC<BookingsItemCardProps> = ({
