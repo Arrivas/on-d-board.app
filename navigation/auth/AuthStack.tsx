@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginComponent from "../../components/login/LoginComponent";
 import StartScreen from "../../components/login/StartScreen";
 import CreateAccount from "../../components/login/createAccount/CreateAccount";
+import ForgotPassword from "../../components/login/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ const AuthStack = () => (
     <Stack.Screen
       name="Create Account"
       component={CreateAccount}
+      options={{ headerShadowVisible: false }}
+    />
+    <Stack.Screen
+      name="ForgotPassword"
+      component={ForgotPassword}
       options={{ headerShadowVisible: false }}
     />
   </Stack.Navigator>

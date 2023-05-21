@@ -52,7 +52,8 @@ const UserHomeScreen = ({ navigation }: any) => {
 
   const recentFilteredBookings = bookings.filter((item) => {
     if (item.bookingDetails.bookingStatus === "completed") return;
-    if (item.bookingDetails.bookingStatus == "cancelled") return;
+    else if (item.bookingDetails.bookingStatus == "cancelled") return;
+    else return item;
   });
 
   return (
@@ -87,7 +88,7 @@ const UserHomeScreen = ({ navigation }: any) => {
         /> */}
         {/* contents */}
         <View
-          className="-top-5"
+          className="top-2"
           style={{
             paddingHorizontal: width >= 500 ? width * 0.1 : width * 0.06,
             flex: 1,

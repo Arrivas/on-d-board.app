@@ -6,7 +6,7 @@ import {
   Keyboard,
   TouchableNativeFeedback,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FormikField from "../forms/FormikField";
 import AppFormField from "../forms/AppFormField";
 import SubmitButton from "../forms/SubmitButton";
@@ -19,6 +19,10 @@ import { setLoading } from "../../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { LoadingSliceInitialState } from "../../App";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 interface LoginVal {
   email: string;
@@ -60,8 +64,37 @@ const LoginComponent = ({ navigation }: any) => {
     dispatch(setLoading(false));
   };
 
-  const handleGoogleSignIn = () => {
-    console.log("google signin");
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "330920771163-te4atc96gjij5a9euihacqidn9tkjk9m.apps.googleusercontent.com",
+    });
+  }, []);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.signOut();
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const googleCred = firebase.auth.GoogleAuthProvider.credential(
+        userInfo.idToken
+      );
+      await firebase.auth().signInWithCredential(googleCred);
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+        console.log("cancelled");
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+        console.log("cancelled");
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+        console.log("cancelled");
+      } else {
+        // some other error happened
+        console.log("cancelled 4", error);
+      }
+    }
   };
 
   return (
@@ -112,7 +145,7 @@ const LoginComponent = ({ navigation }: any) => {
             </FormikField>
             <View className="py-2">
               <TouchableNativeFeedback
-              // onPress={() => navigation.navigate("ForgotPassword")}
+                onPress={() => navigation.navigate("ForgotPassword")}
               >
                 <View className="self-start">
                   <Text
