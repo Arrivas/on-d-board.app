@@ -5,7 +5,7 @@ import {
   TouchableNativeFeedback,
   ToastAndroid,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/firestore";
 import { Apartments } from "../../App";
@@ -17,6 +17,7 @@ import LandlordApartmentCard from "./home/LandlordApartmentCard";
 import Icon from "../Icon";
 import { setApartments } from "../../store/apartmentsSlice";
 import { setLoading } from "../../store/loadingSlice";
+import DeleteDialog from "./home/DeleteDialog";
 
 const LandlordHomeScreen = ({ navigation }: any) => {
   const user = useSelector((state: RootState) => state.user);
@@ -25,6 +26,8 @@ const LandlordHomeScreen = ({ navigation }: any) => {
   );
   const { apartmentIds } = user.user;
   const dispatch = useDispatch();
+  const [showDialog, setShowDialog] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     dispatch(setLoading(true));
@@ -42,8 +45,15 @@ const LandlordHomeScreen = ({ navigation }: any) => {
 
   const handleRemoveApartment = async (
     apartmentRoomsId: string | undefined,
-    currentDocId: string
+    currentDocId: string,
+    apartmentName: string
   ) => {
+    if (inputValue.trim() !== apartmentName.trim())
+      return ToastAndroid.show(
+        "failed, apartment name did not match",
+        ToastAndroid.SHORT
+      );
+
     dispatch(setLoading(true));
     const apartmentsCopy = [...apartments];
     if (apartmentRoomsId !== undefined || apartmentRoomsId !== "") {
@@ -75,6 +85,10 @@ const LandlordHomeScreen = ({ navigation }: any) => {
             {apartments?.map((item: Apartments, index: number) => {
               return (
                 <LandlordApartmentCard
+                  showDialog={showDialog}
+                  setShowDialog={setShowDialog}
+                  setInputValue={setInputValue}
+                  inputValue={inputValue}
                   handleRemoveApartment={handleRemoveApartment}
                   key={index}
                   item={item}
