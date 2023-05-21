@@ -67,21 +67,24 @@ const BookingsItemCard: React.FC<BookingsItemCardProps> = ({
           <Text className="font-semibold" numberOfLines={1}>
             {bookings.bookingDetails.apartmentName}
           </Text>
-          <Text className="font-light" numberOfLines={1}>
-            {Number(
-              moment
-                .duration(
-                  moment(new Date(bookings.createdAt))
-                    .add(72, "hours")
-                    .diff(moment())
-                )
-                .asHours()
-            ).toFixed(0)}{" "}
-            - hours left
-          </Text>
-          {/* <Text className="font-semibold" numberOfLines={1}>
-            {moment(new Date(bookings.createdAt)).format("MMM Do YYYY")}
-          </Text> */}
+          {bookings.bookingDetails.bookingStatus === "pending" ? (
+            <Text className="font-light" numberOfLines={1}>
+              {Number(
+                moment
+                  .duration(
+                    moment(new Date(bookings.createdAt))
+                      .add(72, "hours")
+                      .diff(moment())
+                  )
+                  .asHours()
+              ).toFixed(0)}{" "}
+              - hours left
+            </Text>
+          ) : (
+            <Text className="font-light" numberOfLines={1}>
+              {moment(new Date(bookings.createdAt)).format("MMM Do YYYY")}
+            </Text>
+          )}
         </View>
       </View>
     </TouchableNativeFeedback>

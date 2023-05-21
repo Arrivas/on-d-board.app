@@ -1,23 +1,16 @@
-import {
-  View,
-  Text,
-  TouchableNativeFeedback,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, TouchableNativeFeedback, ScrollView } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import SafeScreenView from "../../../SafeScreenView";
 import colors from "../../../../config/colors";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { separateBookings } from "../../../../functions/separateBookings";
-import Icon from "../../../Icon";
-import { setBooking } from "../../../../store/bookingSlice";
-import { formatAsCurrency } from "../../../../functions/formatAsCurrency";
 
 // tabs
 import PendingTab from "./PendingTab";
 import CancelledTab from "./CancelledTab";
+import OngoingTab from "./OngoingTab";
+import HistoryTab from "./HistoryTab";
 
 const tabLabelItems = [
   { id: 1, label: "Pending" },
@@ -52,7 +45,8 @@ const MyBookings = ({ route }: any) => {
     };
   }, []);
 
-  const { pendings, cancellations } = separateBookings(bookings);
+  const { pendings, cancellations, ongoing, history } =
+    separateBookings(bookings);
 
   return (
     <SafeScreenView>
@@ -98,8 +92,18 @@ const MyBookings = ({ route }: any) => {
               bookings={bookings}
               cancellations={cancellations}
             />
+          ) : activeLabel === "Ongoing" ? (
+            <OngoingTab
+              activeLabel={activeLabel}
+              bookings={bookings}
+              ongoing={ongoing}
+            />
           ) : (
-            <></>
+            <HistoryTab
+              activeLabel={activeLabel}
+              bookings={bookings}
+              history={history}
+            />
           )}
         </View>
       </View>

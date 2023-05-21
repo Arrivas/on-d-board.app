@@ -2,34 +2,34 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableNativeFeedback,
   Image,
+  TouchableNativeFeedback,
 } from "react-native";
 import React from "react";
 import Icon from "../../../Icon";
 import { formatAsCurrency } from "../../../../functions/formatAsCurrency";
-import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+import { useDispatch } from "react-redux";
 import { setBooking } from "../../../../store/bookingSlice";
 import { BookingItems, BookingSliceState } from "../../../../App";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/firestore";
 import { setLoading } from "../../../../store/loadingSlice";
-import moment from "moment";
 
-interface PendingTabProps {
-  bookings: BookingItems[];
+interface OngoingTabProps {
   activeLabel: string;
-  pendings: BookingSliceState[];
+  ongoing: BookingSliceState[];
+  bookings: BookingItems[];
 }
 
-const PendingTab: React.FC<PendingTabProps> = ({
-  bookings,
+const OngoingTab: React.FC<OngoingTabProps> = ({
   activeLabel,
-  pendings,
+  ongoing,
+  bookings,
 }) => {
   const dispatch = useDispatch();
 
-  const handleCancel = async (
+  const handleEndBooking = async (
     tenantDocId: string,
     tenantBookDocId: string,
     apartmentRoomsId: string,
@@ -53,10 +53,10 @@ const PendingTab: React.FC<PendingTabProps> = ({
       (item) => item.bookingDetails.name === bedspaceName
     );
 
-    bookingsCopy[index].bookingDetails.bookingStatus = "cancelled";
+    bookingsCopy[index].bookingDetails.bookingStatus = "completed";
     bookingsCopy[index].bookingDetails.cancellationDate =
       new Date().toISOString();
-    bookingsCopy[index].bookingDetails.cancelledBy = "Landlord";
+
     await query1
       .doc(tenantBookDocId)
       .update({ bookingDetails: bookingsCopy[index].bookingDetails })
@@ -67,7 +67,6 @@ const PendingTab: React.FC<PendingTabProps> = ({
       })
       .catch((err) => console.log(err));
     dispatch(setBooking(bookingsCopy));
-
     // update bedspace availability
     const bedspaces: [] | any = [];
     await firebase
@@ -86,54 +85,14 @@ const PendingTab: React.FC<PendingTabProps> = ({
       .collection("apartmentRooms")
       .doc(apartmentRoomsId)
       .update({ bedspaces: bedspaces[0] });
-
-    dispatch(setLoading(false));
-  };
-
-  const handleAccept = async (
-    tenantDocId: string,
-    tenantBookDocId: string,
-    apartmentRoomsId: string,
-    apartmentBookDocId: string,
-    bedspaceName: string
-  ) => {
-    dispatch(setLoading(true));
-    const query1 = firebase
-      .firestore()
-      .collection("tenants")
-      .doc(tenantDocId)
-      .collection("bookings");
-    const query2 = firebase
-      .firestore()
-      .collection("apartmentRooms")
-      .doc(apartmentRoomsId)
-      .collection("bookings");
-
-    const bookingsCopy = [...bookings];
-    const index = bookingsCopy.findIndex(
-      (item) => item.bookingDetails.name === bedspaceName
-    );
-
-    bookingsCopy[index].bookingDetails.bookingStatus = "ongoing";
-
-    await query1
-      .doc(tenantBookDocId)
-      .update({ bookingDetails: bookingsCopy[index].bookingDetails })
-      .then(async () => {
-        await query2
-          .doc(apartmentBookDocId)
-          .update({ bookingDetails: bookingsCopy[index].bookingDetails });
-      })
-      .catch((err) => console.log(err));
-    dispatch(setBooking(bookingsCopy));
     dispatch(setLoading(false));
   };
 
   return (
     <ScrollView>
-      {activeLabel === "Pending" && (
+      {activeLabel === "Ongoing" && (
         <>
-          {pendings.map((item: any) => {
+          {ongoing.map((item: any) => {
             const {
               bookingDetails,
               tenantDetails,
@@ -258,11 +217,12 @@ const PendingTab: React.FC<PendingTabProps> = ({
                     )}
                   </View>
                 </TouchableNativeFeedback>
+
                 {/* buttons */}
                 <View className="flex-row self-end items-end space-x-4">
                   <TouchableNativeFeedback
                     onPress={() =>
-                      handleCancel(
+                      handleEndBooking(
                         tenantDocId,
                         tenantBookDocId,
                         apartmentRoomsId,
@@ -272,22 +232,7 @@ const PendingTab: React.FC<PendingTabProps> = ({
                     }
                   >
                     <View className="p-2">
-                      <Text>cancel</Text>
-                    </View>
-                  </TouchableNativeFeedback>
-                  <TouchableNativeFeedback
-                    onPress={() =>
-                      handleAccept(
-                        tenantDocId,
-                        tenantBookDocId,
-                        apartmentRoomsId,
-                        apartmentBookDocId,
-                        name
-                      )
-                    }
-                  >
-                    <View className="p-2">
-                      <Text>accept</Text>
+                      <Text>end booking</Text>
                     </View>
                   </TouchableNativeFeedback>
                 </View>
@@ -300,4 +245,4 @@ const PendingTab: React.FC<PendingTabProps> = ({
   );
 };
 
-export default PendingTab;
+export default OngoingTab;

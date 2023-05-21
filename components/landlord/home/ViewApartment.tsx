@@ -5,8 +5,6 @@ import Icon from "../../Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { setBooking } from "../../../store/bookingSlice";
-import colors from "../../../config/colors";
-import { fetchBookings } from "../../../functions/fetchBookings";
 import { separateBookings } from "../../../functions/separateBookings";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/firestore";
@@ -62,7 +60,8 @@ const ViewApartment = ({ route, navigation }: any) => {
     });
   }, []);
 
-  const { pendings, cancellations } = separateBookings(bookings);
+  const { pendings, cancellations, ongoing, history } =
+    separateBookings(bookings);
 
   return (
     <SafeScreenView>
@@ -132,7 +131,9 @@ const ViewApartment = ({ route, navigation }: any) => {
                       ? pendings?.length
                       : item.label === "Cancelled"
                       ? cancellations?.length
-                      : 0}
+                      : item.label === "Ongoing"
+                      ? ongoing?.length
+                      : history?.length}
                   </Text>
                   <Text className="text-xs text-gray-400">{item.label}</Text>
                 </View>

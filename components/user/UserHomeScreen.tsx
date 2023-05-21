@@ -51,7 +51,8 @@ const UserHomeScreen = ({ navigation }: any) => {
   }, []);
 
   const recentFilteredBookings = bookings.filter((item) => {
-    if (item.bookingDetails.bookingStatus !== "cancelled") return item;
+    if (item.bookingDetails.bookingStatus === "completed") return;
+    if (item.bookingDetails.bookingStatus == "cancelled") return;
   });
 
   return (
@@ -68,7 +69,7 @@ const UserHomeScreen = ({ navigation }: any) => {
             <HomeSearch search={search} setSearch={setSearch} />
 
             <Image
-              className="w-full object-cover rounded-b-[25px]"
+              className="w-full object-cover rounded-b-[25px] -z-50"
               source={require("../../assets/capitol_2.jpg")}
               style={{
                 transform: [{ scale: 1.3 }],
@@ -79,11 +80,11 @@ const UserHomeScreen = ({ navigation }: any) => {
             <View className="absolute inset-0 bg-black/40 w-full h-full " />
           </View>
         </TouchableWithoutFeedback>
-        {/* perks */}
-        <AmenityFilter
+        {/* amenity */}
+        {/* <AmenityFilter
           setSelectedPerks={setSelectedPerks}
           selectedPerks={selectedPerks}
-        />
+        /> */}
         {/* contents */}
         <View
           className="-top-5"
