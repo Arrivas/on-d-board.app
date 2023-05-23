@@ -95,6 +95,7 @@ export interface UserSliceInitialState {
     uid: string;
     userType: string;
     apartmentIds: any;
+    accountStatus: string;
   };
 }
 export interface LoadingSliceInitialState {

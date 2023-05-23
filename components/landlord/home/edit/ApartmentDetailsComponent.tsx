@@ -89,6 +89,7 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
     const index = apartmentsCopy.findIndex((item) => item.docId === docId);
 
     const toSubmitObj: any = {
+      ...apartmentsCopy[index],
       apartmentInfo: {
         address: values.address,
         apartmentName: values.apartmentName,

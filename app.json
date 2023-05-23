@@ -4,6 +4,7 @@
     "slug": "on_d_board.app",
     "version": "1.0.0",
     "assetBundlePatterns": ["**/*"],
-    "plugins": ["@react-native-google-signin/google-signin"]
+    "plugins": ["@react-native-google-signin/google-signin"],
+    "permissions": ["BACKGROUND_FETCH"]
   }
 }

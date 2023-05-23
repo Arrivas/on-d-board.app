@@ -24,6 +24,7 @@ export interface CreateUser {
   email?: string;
   uid?: string;
   imageUrl?: string;
+  accountStatus: string;
 }
 
 const CreateAccount = ({ navigation }: any) => {
@@ -81,6 +82,7 @@ const CreateAccount = ({ navigation }: any) => {
 
   const handleCreateUser = async (values: CreateUser) => {
     values.email = emailDetails;
+    values.accountStatus = "notVerified";
     try {
       dispatch(setLoading(true));
       const { user } = await firebase

@@ -27,7 +27,7 @@ const EditFrontImage = ({ route, navigation }: any) => {
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      quality: 1,
+      quality: 0.4,
     });
 
     if (!result.canceled) {

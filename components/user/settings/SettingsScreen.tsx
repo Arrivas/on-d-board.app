@@ -14,6 +14,7 @@ const SettingsScreen = ({ navigation }: any) => {
     <SafeScreenView>
       <View className="flex-1 px-4 py-5">
         <Text className="font-bold text-xl">Account</Text>
+        {/* @ts-ignore */}
         {user.user === "anonymous" && (
           <>
             <Text>
@@ -44,6 +45,7 @@ const SettingsScreen = ({ navigation }: any) => {
           </>
         )}
         {/* logout */}
+        {/* @ts-ignore */}
         {user.user !== "anonymous" && (
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple("#eee", false)}

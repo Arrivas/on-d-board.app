@@ -28,6 +28,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
   const [selectedBedspace, setSelectedBedspace] = useState<Bedspaces>();
   const { apartmentRoomsId } = route.params;
   const dispatch = useDispatch();
+  const [isBooked, setIsBooked] = useState(false);
 
   const fetchBedspaces = async (): Promise<Bedspaces[] | null | undefined> => {
     dispatch(setLoading(true));
@@ -65,6 +66,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
   const price = selectedBedspace && selectedBedspace?.bedspace.price;
 
   const handleBook = async () => {
+    setIsBooked(true);
     const pending: any = {
       bookingDetails: {
         apartmentName: selectedBedspace?.bedspace.apartmentName,
@@ -302,7 +304,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
                 </View>
               </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback onPress={handleBook}>
+            <TouchableNativeFeedback disabled={isBooked} onPress={handleBook}>
               <View
                 className="flex-row items-center bg-[#ff6666] px-2 rounded-md ml-1 mb-2 justify-center"
                 style={{

@@ -13,6 +13,7 @@ const initialState: UserSliceInitialState = {
     uid: "",
     userType: "",
     apartmentIds: [],
+    accountStatus: "",
   },
 };
 

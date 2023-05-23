@@ -13,19 +13,18 @@ import Icon from "../Icon";
 import SafeScreenView from "../SafeScreenView";
 import { verticalScale, moderateScale } from "../../config/metrics";
 import HomeSearch from "./home/HomeSearch";
-import AmenityFilter from "./home/AmenityFilter";
 import AppartmentsCard from "./home/AppartmentsCard";
-import colors from "../../config/colors";
 import { fetchApartments } from "../../functions/fetchApartments";
 import { useDispatch, useSelector } from "react-redux";
 import { setApartments } from "../../store/apartmentsSlice";
 import { RootState } from "../../store";
 import { setBooking } from "../../store/bookingSlice";
 import { fetchBookings } from "../../functions/fetchBookings";
-import { horizontalScale } from "../../config/metrics";
 import HomeMap from "./home/HomeMap";
 import BookingsItemCard from "./home/BookingsItemCard";
-import { BookingSliceState } from "../../App";
+import firebase from "@react-native-firebase/app";
+import "@react-native-firebase/firestore";
+import { BookingItems } from "../../App";
 
 const UserHomeScreen = ({ navigation }: any) => {
   const apartments = useSelector(
@@ -41,11 +40,33 @@ const UserHomeScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     let isMounted = true;
+    let unsubscribe: any;
     if (isMounted) {
       fetchApartments(5, undefined).then((res) => dispatch(setApartments(res)));
+      unsubscribe = firebase
+        .firestore()
+        .collection("tenants")
+        .doc(user?.docId)
+        .collection("bookings")
+        .onSnapshot(
+          (snapshot) => {
+            if (snapshot.empty) return;
+            const result: BookingItems[] = [];
+            snapshot.forEach((doc) => {
+              const bookingData = doc.data() as BookingItems;
+              const bookingWithShowState = { ...bookingData, showState: false };
+              result.push(bookingWithShowState);
+            });
+            dispatch(setBooking(result));
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
       fetchBookings(user.docId).then((res) => dispatch(setBooking(res)));
     }
     return () => {
+      unsubscribe();
       isMounted = false;
     };
   }, []);
@@ -61,7 +82,7 @@ const UserHomeScreen = ({ navigation }: any) => {
       <View className="flex-1 px-[2px]">
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View
-            className="w-full h-[320px] overflow-hidden rounded-b-[40px]"
+            className="w-full overflow-hidden rounded-b-[40px]"
             style={{
               height: verticalScale(250),
             }}
@@ -88,7 +109,9 @@ const UserHomeScreen = ({ navigation }: any) => {
         /> */}
         {/* contents */}
         <View
-          className="top-2"
+          className={`${
+            recentFilteredBookings?.length !== 0 ? "top-1" : "-top-10"
+          }`}
           style={{
             paddingHorizontal: width >= 500 ? width * 0.1 : width * 0.06,
             flex: 1,

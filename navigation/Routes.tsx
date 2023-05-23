@@ -14,6 +14,7 @@ import LandlordRootStack from "./landlord/LandlordRootStack";
 import ActivityIndicator from "../components/ActivityIndicator";
 import { RootState } from "../store";
 import { setLoading } from "../store/loadingSlice";
+import HigherAdminTab from "./userAdmin/HigherAdminTab";
 
 const Routes = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,15 @@ const Routes = () => {
           await firebase
             .firestore()
             .collection("landlords")
+            .limit(1)
+            .where("uid", "==", uid)
+            .get()
+            .then((data) => {
+              return data.forEach((doc) => fetchedUser.push(doc.data()));
+            });
+          await firebase
+            .firestore()
+            .collection("higherAdmins")
             .limit(1)
             .where("uid", "==", uid)
             .get()
@@ -130,7 +140,10 @@ const Routes = () => {
           setIsEmailVerified={setIsEmailVerified}
           userState={userState}
         />
-      ) : user?.user === "anonymous" || user?.user?.userType === "tenant" ? (
+      ) : user?.user?.userType === "higherAdmin" ? (
+        <HigherAdminTab />
+      ) : // @ts-ignore
+      user?.user === "anonymous" || user?.user?.userType === "tenant" ? (
         <UserRootStack />
       ) : user?.user?.userType === "landlord" ? (
         <LandlordRootStack />
