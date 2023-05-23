@@ -72,6 +72,7 @@ const LandlordHomeScreen = ({ navigation }: any) => {
       .collection("apartments")
       .doc(currentDocId)
       .delete();
+    setShowDialog(false);
     ToastAndroid.show("removed successfully", ToastAndroid.SHORT);
     dispatch(setLoading(false));
   };
