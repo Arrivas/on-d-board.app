@@ -4,6 +4,7 @@ import {
   Image,
   ScrollView,
   TouchableNativeFeedback,
+  ToastAndroid,
 } from "react-native";
 import React from "react";
 import SafeScreenView from "../../SafeScreenView";
@@ -12,14 +13,22 @@ import colors from "../../../config/colors";
 import { formatAsCurrency } from "../../../functions/formatAsCurrency";
 import ApartmentAmenities from "./ApartmentAmenities";
 import Specifications from "./ApartmentSpecifications";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 const ApartmentDetails = ({ route, navigation }: any) => {
   const { apartmentDetails } = route.params;
-  const { apartmentInfo, tenantInfo, specifications, apartmentRoomsId } =
-    apartmentDetails;
-  const { address, imageUrl, apartmentName, price, amenities, description } =
-    apartmentInfo;
-
+  const { apartmentInfo, specifications, apartmentRoomsId } = apartmentDetails;
+  const {
+    address,
+    imageUrl,
+    apartmentName,
+    price,
+    amenities,
+    description,
+    barangay,
+  } = apartmentInfo;
+  const user = useSelector((state: RootState) => state.user.user);
   return (
     <SafeScreenView>
       <View className="flex-1">
@@ -34,7 +43,10 @@ const ApartmentDetails = ({ route, navigation }: any) => {
             <Text className="text-2xl font-semibold ">{apartmentName}</Text>
             <View className="flex-row items-center mb-3">
               <Icon ionName="location-outline" iconLibrary="IonIcons" />
-              <Text>{address}</Text>
+              <View className="ml-1">
+                <Text>{barangay}</Text>
+                <Text className="leading-4">{address}</Text>
+              </View>
             </View>
             {/* specification */}
             <Specifications
@@ -75,9 +87,25 @@ const ApartmentDetails = ({ route, navigation }: any) => {
             <ApartmentAmenities amenities={amenities} />
           </ScrollView>
           <TouchableNativeFeedback
-            onPress={() =>
-              navigation.navigate("ApartmentBooking", { apartmentRoomsId })
-            }
+            onPress={() => {
+              if (
+                user.accountStatus === "waiting" ||
+                user.accountStatus === "notVerified" ||
+                user.accountStatus === "declined"
+              ) {
+                navigation.navigate("SettingsStack", {
+                  screen: "Settings",
+                  params: {
+                    screen: "Verification",
+                  },
+                });
+                return ToastAndroid.show(
+                  "please verify your identity first",
+                  ToastAndroid.SHORT
+                );
+              }
+              navigation.navigate("ApartmentBooking", { apartmentRoomsId });
+            }}
             background={TouchableNativeFeedback.Ripple("#EEE", false)}
           >
             <View

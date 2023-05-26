@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HigherAdminHomeStack from "./HigherAdminHomeStack";
 import HigherAdminSettingsStack from "./HigherAdminSettingsStack";
 import Icon from "../../components/Icon";
+import colors from "../../config/colors";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,6 +15,7 @@ const HigherAdminTab = () => (
       options={{
         title: "Home",
         headerShown: false,
+        tabBarActiveTintColor: colors.primary,
         tabBarIcon: ({ color }) => (
           <View
             style={{
@@ -39,6 +41,7 @@ const HigherAdminTab = () => (
       options={{
         title: "Settings",
         headerShown: false,
+        tabBarActiveTintColor: colors.primary,
         tabBarIcon: ({ color }) => (
           <View
             style={{

@@ -30,6 +30,7 @@ export interface BookingItems {
       isDoubleDeck: boolean;
       location: string;
     };
+    barangay: string;
     imgUrl: string;
     name: string;
     price: string | number;
@@ -96,6 +97,8 @@ export interface UserSliceInitialState {
     userType: string;
     apartmentIds: any;
     accountStatus: string;
+    submittedCredentials?: any;
+    requests?: any;
   };
 }
 export interface LoadingSliceInitialState {
@@ -129,6 +132,7 @@ export interface Specifications {
 export interface Apartments {
   apartmentInfo: {
     address: string;
+    barangay: string;
     apartmentName: string;
     imageUrl: string;
     geoLocation: {

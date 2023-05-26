@@ -39,6 +39,7 @@ const NewApartment = ({ navigation }: any) => {
     apartmentName: "",
     description: "",
   });
+  const [selectedBarangay, setSelectedBarangay] = useState("");
 
   const dispatch = useDispatch();
 
@@ -78,6 +79,7 @@ const NewApartment = ({ navigation }: any) => {
       apartmentInfo: {
         address: values.address,
         apartmentName: firstStepValues.apartmentName,
+        barangay: selectedBarangay,
         description: firstStepValues.description,
         imageUrl:
           "https://firebasestorage.googleapis.com/v0/b/on-d-board.appspot.com/o/no_image.jpg?alt=media&token=70198e54-cf22-4c64-a3e7-eece584ab754",
@@ -145,6 +147,8 @@ const NewApartment = ({ navigation }: any) => {
           />
         ) : (
           <LocationApartment
+            selectedBarangay={selectedBarangay}
+            setSelectedBarangay={setSelectedBarangay}
             setGeoError={setGeoError}
             geoError={geoError}
             handleCreate={handleCreate}

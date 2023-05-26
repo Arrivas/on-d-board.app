@@ -19,7 +19,7 @@ import ErrorMessage from "../../../forms/ErrorMessage";
 import getDimensions from "../../../../config/getDimensions";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../../store/loadingSlice";
-
+import SelectBarangay from "../edit/SelectBarangay";
 export interface SecondStepValues {
   address: string;
   ownerName: string;
@@ -41,6 +41,8 @@ interface LocationApartmentProps {
   secondStepValues: SecondStepValues | undefined;
   handleCreate: any;
   geoError: string;
+  selectedBarangay: string;
+  setSelectedBarangay: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const LocationApartment: React.FC<LocationApartmentProps> = ({
@@ -51,6 +53,8 @@ const LocationApartment: React.FC<LocationApartmentProps> = ({
   handleCreate,
   geoError,
   setGeoError,
+  selectedBarangay,
+  setSelectedBarangay,
 }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const { height } = getDimensions();
@@ -118,8 +122,16 @@ const LocationApartment: React.FC<LocationApartmentProps> = ({
             </Text>
             {/* geolocation */}
             <View className="w-full px-2">
+              <Text className="text-xs self-start">barangay</Text>
+              <SelectBarangay
+                setSelectedBarangay={setSelectedBarangay}
+                selectedBarangay={selectedBarangay}
+                type="new"
+              />
+
               <Text className="text-xs self-start">address</Text>
               <AppFormField name="address" placeholder="Address" />
+
               <View className="my-2 mb-3">
                 <View className="flex-row justify-between">
                   <Text className="text-xs font-semibold">latitude</Text>

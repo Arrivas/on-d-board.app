@@ -14,6 +14,8 @@ const initialState: UserSliceInitialState = {
     userType: "",
     apartmentIds: [],
     accountStatus: "",
+    submittedCredentials: null,
+    requests: [],
   },
 };
 

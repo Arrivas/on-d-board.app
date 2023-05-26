@@ -8,7 +8,7 @@ const AppartmentsCard: React.FC<AppartmentsCardProps> = ({
   apartmentDetails,
 }) => {
   const { apartmentInfo } = apartmentDetails;
-  const { apartmentName, address, imageUrl } = apartmentInfo;
+  const { apartmentName, address, imageUrl, barangay } = apartmentInfo;
   return (
     <TouchableNativeFeedback
       onPress={() =>
@@ -35,6 +35,7 @@ const AppartmentsCard: React.FC<AppartmentsCardProps> = ({
         />
         <View className="py-2">
           <Text className="font-bold">{apartmentName}</Text>
+          <Text>{barangay}</Text>
           <Text>{address}</Text>
         </View>
       </View>

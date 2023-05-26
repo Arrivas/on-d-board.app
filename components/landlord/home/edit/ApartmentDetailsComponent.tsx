@@ -6,7 +6,7 @@ import {
   ScrollView,
   ToastAndroid,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import FormikField from "../../../forms/FormikField";
 import AppFormField from "../../../forms/AppFormField";
 import PinLocationModal from "../PinLocationModal";
@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setApartments } from "../../../../store/apartmentsSlice";
 import { RootState } from "../../../../store";
 import { setLoading } from "../../../../store/loadingSlice";
+import SelectBarangay from "./SelectBarangay";
 
 interface ApartmentDetailsProps {
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -57,8 +58,10 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
   );
   const currentApartment: any = apartments.find((item) => item.docId === docId);
   const { apartmentInfo, landlordInfo, specifications } = currentApartment;
-  const { apartmentName, description, geoLocation, price, address } =
+  const { apartmentName, description, geoLocation, price, address, barangay } =
     apartmentInfo;
+
+  const [selectedBarangay, setSelectedBarangay] = useState(barangay);
 
   const initialValues = {
     apartmentName: apartmentName || "",
@@ -81,6 +84,7 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
     landlordContact: landlordInfo.contactNo || "",
     ownerName: landlordInfo.ownerName || "",
     imageUrl: apartmentInfo.imageUrl,
+    barangay: selectedBarangay,
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -91,6 +95,7 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
     const toSubmitObj: any = {
       ...apartmentsCopy[index],
       apartmentInfo: {
+        barangay: values.barangay,
         address: values.address,
         apartmentName: values.apartmentName,
         description: values.description,
@@ -153,6 +158,11 @@ const ApartmentDetailsComponent: React.FC<ApartmentDetailsProps> = ({
               description={true}
               useBorder={true}
               textInputViewClass="bg-white"
+            />
+            <Text className="font-semibold mb-1">Barangay</Text>
+            <SelectBarangay
+              setSelectedBarangay={setSelectedBarangay}
+              selectedBarangay={selectedBarangay}
             />
 
             <Text className="font-semibold mb-1">Address</Text>

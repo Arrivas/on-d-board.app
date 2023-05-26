@@ -76,24 +76,32 @@ const ApartmentAmenities: React.FC<ApartmentAmenitiesProps> = ({
       <View className="my-2">
         <Text className="font-bold">Amenities:</Text>
         <ScrollView horizontal>
-          <View className="my-1 flex-row">
-            {amenities
-              ?.filter((item: Amenities) => item.offering)
-              .map((item: Amenities) => (
-                <View
-                  key={item.value}
-                  className="flex-row p-2 px-4 rounded-md mr-1 items-center justify-center"
-                  style={{
-                    backgroundColor: colors.primary,
-                  }}
-                >
-                  {IconAmenities[item.offering ? item.value : ""]}
-                  <Text className="text-white text-xs font-bold ml-1">
-                    {item.offering && item.value}
-                  </Text>
-                </View>
-              ))}
-          </View>
+          {amenities.every((amenity) => amenity.offering === false) ? (
+            <View className="self-center">
+              <Text className="text-xs text-gray-300">
+                no available amenities
+              </Text>
+            </View>
+          ) : (
+            <View className="my-1 flex-row">
+              {amenities
+                ?.filter((item: Amenities) => item.offering)
+                .map((item: Amenities) => (
+                  <View
+                    key={item.value}
+                    className="flex-row p-2 px-4 rounded-md mr-1 items-center justify-center"
+                    style={{
+                      backgroundColor: colors.primary,
+                    }}
+                  >
+                    {IconAmenities[item.offering ? item.value : ""]}
+                    <Text className="text-white text-xs font-bold ml-1">
+                      {item.offering && item.value}
+                    </Text>
+                  </View>
+                ))}
+            </View>
+          )}
         </ScrollView>
       </View>
     </>
