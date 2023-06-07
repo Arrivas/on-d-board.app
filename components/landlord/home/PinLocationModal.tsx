@@ -1,4 +1,4 @@
-import { View, Modal } from "react-native";
+import { View, Modal, ToastAndroid } from "react-native";
 import React from "react";
 import MapView, { Marker } from "react-native-maps";
 import { PinnedLocation } from "./EditApartmentDetails";
@@ -18,6 +18,7 @@ const PinLocationModal: React.FC<PinLocationModalProps> = ({
 }) => {
   function handleMapPress(e: any) {
     setPinnedLocation(e.nativeEvent.coordinate);
+    ToastAndroid.show("Pinned Location Selected", ToastAndroid.SHORT);
   }
 
   return (

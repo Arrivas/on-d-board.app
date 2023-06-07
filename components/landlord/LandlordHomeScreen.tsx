@@ -58,6 +58,15 @@ const LandlordHomeScreen = ({ navigation }: any) => {
     const apartmentsCopy = [...apartments];
     if (apartmentRoomsId !== undefined || apartmentRoomsId !== "") {
     }
+    const userCopy = { ...user.user };
+    userCopy.apartmentIds = userCopy.apartmentIds.filter(
+      (item: string) => item !== currentDocId
+    );
+    await firebase
+      .firestore()
+      .collection("landlords")
+      .doc(user?.user.docId)
+      .update(userCopy);
     await firebase
       .firestore()
       .collection("apartmentRooms")
@@ -73,6 +82,7 @@ const LandlordHomeScreen = ({ navigation }: any) => {
       .doc(currentDocId)
       .delete();
     setShowDialog(false);
+    setInputValue("");
     ToastAndroid.show("removed successfully", ToastAndroid.SHORT);
     dispatch(setLoading(false));
   };
@@ -83,10 +93,12 @@ const LandlordHomeScreen = ({ navigation }: any) => {
         <Text className="font-bold text-2xl">My Apartments</Text>
         <View className="mt-5">
           {user?.user?.accountStatus === "notVerified" ||
-            user?.user?.accountStatus === "pending" ||
-            (user?.user?.accountStatus === "declined" && (
-              <NotVerifiedMessage navigation={navigation} />
-            ))}
+          user?.user?.accountStatus === "pending" ||
+          user?.user?.accountStatus === "declined" ? (
+            <NotVerifiedMessage navigation={navigation} />
+          ) : (
+            <></>
+          )}
           <ScrollView>
             {apartments?.map((item: Apartments, index: number) => {
               return (
@@ -106,7 +118,7 @@ const LandlordHomeScreen = ({ navigation }: any) => {
               disabled={
                 user?.user?.accountStatus === "waiting" ||
                 user?.user?.accountStatus === "notVerified" ||
-                user?.user?.accountStatus === "rejected"
+                user?.user?.accountStatus === "declined"
                   ? true
                   : false
               }

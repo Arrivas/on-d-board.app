@@ -112,7 +112,6 @@ const NewApartment = ({ navigation }: any) => {
         res.update({ docId: res.id });
 
         userCopy.apartmentIds = [...userCopy.apartmentIds, res.id];
-        console.log(userCopy);
         apartmentsCopy.push(toSubmitObj as Apartments);
 
         await firebase

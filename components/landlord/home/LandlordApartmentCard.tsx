@@ -54,7 +54,11 @@ const LandlordApartmentCard: React.FC<LandlordApartmentCardProps> = ({
           </View>
           {/* bototm button */}
           <View className="flex-row py-2 ">
-            <TouchableNativeFeedback onPress={() => setShowDialog(true)}>
+            <TouchableNativeFeedback
+              onPress={() => {
+                if (item.docId === docId) setShowDialog(true);
+              }}
+            >
               <View className="p-3 flex-1 flex-row items-center justify-center mr-1 space-x-1 bg-[#B30000] rounded-md">
                 <Icon ionName="trash" iconLibrary="IonIcons" color="white" />
                 <Text className="font-semibold text-white">remove</Text>
