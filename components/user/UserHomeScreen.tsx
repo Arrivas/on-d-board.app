@@ -42,7 +42,9 @@ const UserHomeScreen = ({ navigation }: any) => {
     let isMounted = true;
     let unsubscribe: any;
     if (isMounted) {
-      fetchApartments(5, undefined).then((res) => dispatch(setApartments(res)));
+      fetchApartments(5, undefined, user?.userType).then((res) =>
+        dispatch(setApartments(res))
+      );
       unsubscribe = firebase
         .firestore()
         .collection("tenants")
@@ -147,7 +149,14 @@ const UserHomeScreen = ({ navigation }: any) => {
             {/* recommended */}
             <View className="flex-1">
               <View>
-                <Text className="font-bold py-2">Recommended for you</Text>
+                {apartments?.length !== 0 ? (
+                  <Text className="font-bold py-2">Recommended for you</Text>
+                ) : (
+                  <Text className="font-thin text-xs self-center">
+                    no available apartments at the moment..
+                  </Text>
+                )}
+
                 <ScrollView
                   horizontal
                   contentContainerStyle={{ flexGrow: 0 }}

@@ -9,6 +9,7 @@ const AppartmentsCard: React.FC<AppartmentsCardProps> = ({
 }) => {
   const { apartmentInfo } = apartmentDetails;
   const { apartmentName, address, imageUrl, barangay } = apartmentInfo;
+
   return (
     <TouchableNativeFeedback
       onPress={() =>

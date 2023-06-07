@@ -24,13 +24,14 @@ const CheckApartmentName: React.FC<CheckApartmentNameProps> = ({
   firstStepValues,
 }) => {
   const handleSubmit = async (values: any, { setErrors }: any) => {
-    await firebase
+    const res = await firebase
       .firestore()
       .collection("apartments")
-      .get()
-      .then((data) => {
-        data.forEach((item) => item.data());
-      });
+      .where("apartmentInfo.apartmentName", "==", values.apartmentName)
+      .limit(1)
+      .get();
+    if (!res.empty)
+      return setErrors({ apartmentName: "apartment name already exists" });
     setFirstStepValues(values);
     setProgress(2);
   };

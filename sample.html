@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #mapContainer {
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mapContainer"></div>
+
+    <script>
+      async function loadMap() {
+        const googleMapsAPIKey = "AIzaSyDyBiw2UzwCe3bVtPK6Dr8i3LEycI7zZkE";
+
+        // Load the Google Maps API
+        const googleMaps = await googleMapsAPILoader({ key: googleMapsAPIKey });
+
+        // Create the map instance
+        const map = new googleMaps.Map(
+          document.getElementById("mapContainer"),
+          {
+            center: { lat: 37.7749, lng: -122.4194 },
+            zoom: 12,
+          }
+        );
+
+        // Add a marker to the map
+        const marker = new googleMaps.Marker({
+          position: { lat: 37.7749, lng: -122.4194 },
+          map: map,
+        });
+      }
+
+      // Load the Google Maps API Loader script
+      function loadGoogleMapsAPI(options) {
+        return new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${options.key}&callback=initMap`;
+          script.defer = true;
+          script.async = true;
+          window.initMap = resolve;
+          document.head.appendChild(script);
+        });
+      }
+
+      loadMap();
+    </script>
+
+    <script src="https://unpkg.com/google-maps-api-loader@3.3.2/index.js"></script>
+  </body>
+</html>

@@ -13,7 +13,7 @@ const NotVerifiedMessage = ({ navigation, type = "default" }: any) => {
         })
       }
     >
-      <View className="bg-[#FFF3CD] p-4 text-center">
+      <View className="bg-[#FFF3CD] p-4 mb-2 opacity-60 text-center">
         <Text className="text-[#856404] font-bold">
           {type === "default"
             ? "Your shop is currently inactive and not visible in the booking selection. To ensure a seamless booking experience for your customers, please verify your shop information first."
@@ -22,7 +22,7 @@ const NotVerifiedMessage = ({ navigation, type = "default" }: any) => {
         {type === "default" && (
           <View className="flex-row self-end mt-2">
             <Text className="font-light text-[#856404]">
-              tap to get verified
+              tap to go in settings
             </Text>
             <Icon iconLibrary="Feather" featherName="chevron-right" size={20} />
           </View>

@@ -12,6 +12,7 @@ import { setLoading } from "../../store/loadingSlice";
 import Tenant from "./home/Tenant";
 import getDimensions from "../../config/getDimensions";
 import NoItemsYet from "../NoItemsYet.";
+import Landlord from "./home/Landlord";
 
 const HigherAdminHomeScreen = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -176,7 +177,14 @@ const HigherAdminHomeScreen = () => {
                   handleAccept={handleAccept}
                 />
               ) : (
-                <></>
+                <Landlord
+                  item={item}
+                  height={height}
+                  width={width}
+                  loading={loading}
+                  handleDecline={handleDecline}
+                  handleAccept={handleAccept}
+                />
                 // <Shop
                 //   item={item}
                 //   height={height}

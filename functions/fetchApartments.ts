@@ -4,12 +4,25 @@ import { Apartments } from "../App";
 
 const fetchApartments = async (
   count?: number,
-  ids?: string[]
+  ids?: string[],
+  userType?: string
 ): Promise<Apartments[]> => {
   let results: Apartments[] = [];
-  const query = count
-    ? firebase.firestore().collection("apartments").limit(count)
-    : firebase.firestore().collection("apartments");
+  const query =
+    count && userType === "landlord"
+      ? firebase.firestore().collection("apartments").limit(count)
+      : count && userType === "tenant"
+      ? firebase
+          .firestore()
+          .collection("apartments")
+          .limit(count)
+          .where("accountStatus", "==", "verified")
+      : userType === "tenant"
+      ? firebase
+          .firestore()
+          .collection("apartments")
+          .where("accountStatus", "==", "verified")
+      : firebase.firestore().collection("apartments");
 
   try {
     const snapshot = await query.get();
@@ -21,6 +34,7 @@ const fetchApartments = async (
         .firestore()
         .collection("apartments")
         .where("docId", "in", ids)
+
         .get()
         .then((querySnapshot) => {
           querySnapshot.docs.forEach((doc) =>
@@ -28,6 +42,7 @@ const fetchApartments = async (
           );
         });
     } else {
+      if (userType === "landlord") return [];
       snapshot.forEach((doc) => {
         results.push(doc.data() as Apartments);
       });

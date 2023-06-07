@@ -17,14 +17,14 @@ import LandlordApartmentCard from "./home/LandlordApartmentCard";
 import Icon from "../Icon";
 import { setApartments } from "../../store/apartmentsSlice";
 import { setLoading } from "../../store/loadingSlice";
-import DeleteDialog from "./home/DeleteDialog";
+import NotVerifiedMessage from "./settings/NotVerifiedMessage";
 
 const LandlordHomeScreen = ({ navigation }: any) => {
   const user = useSelector((state: RootState) => state.user);
   const apartments = useSelector(
     (state: RootState) => state.apartments.apartments
   );
-  const { apartmentIds } = user.user;
+  const { apartmentIds, userType } = user.user;
   const dispatch = useDispatch();
   const [showDialog, setShowDialog] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -33,7 +33,7 @@ const LandlordHomeScreen = ({ navigation }: any) => {
     dispatch(setLoading(true));
     let isMounted = true;
     if (isMounted) {
-      fetchApartments(undefined, apartmentIds).then((res) =>
+      fetchApartments(undefined, apartmentIds, userType).then((res) =>
         dispatch(setApartments(res))
       );
     }
@@ -82,6 +82,11 @@ const LandlordHomeScreen = ({ navigation }: any) => {
       <View className="flex-1 p-5">
         <Text className="font-bold text-2xl">My Apartments</Text>
         <View className="mt-5">
+          {user?.user?.accountStatus === "notVerified" ||
+            user?.user?.accountStatus === "pending" ||
+            (user?.user?.accountStatus === "declined" && (
+              <NotVerifiedMessage navigation={navigation} />
+            ))}
           <ScrollView>
             {apartments?.map((item: Apartments, index: number) => {
               return (
@@ -98,6 +103,13 @@ const LandlordHomeScreen = ({ navigation }: any) => {
               );
             })}
             <TouchableNativeFeedback
+              disabled={
+                user?.user?.accountStatus === "waiting" ||
+                user?.user?.accountStatus === "notVerified" ||
+                user?.user?.accountStatus === "rejected"
+                  ? true
+                  : false
+              }
               onPress={() =>
                 navigation.navigate("LandlordApartmentStack", {
                   screen: "NewApartment",
