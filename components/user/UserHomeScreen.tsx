@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ScrollView,
-  TouchableNativeFeedback,
-} from "react-native";
+import { View, Text, Image, ScrollView, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import getDimensions from "../../config/getDimensions";
 import Icon from "../Icon";
@@ -25,6 +17,7 @@ import BookingsItemCard from "./home/BookingsItemCard";
 import firebase from "@react-native-firebase/app";
 import "@react-native-firebase/firestore";
 import { BookingItems } from "../../App";
+import SearchModal from "./home/SearchModal";
 
 const UserHomeScreen = ({ navigation }: any) => {
   const apartments = useSelector(
@@ -34,10 +27,39 @@ const UserHomeScreen = ({ navigation }: any) => {
   const bookings = useSelector((state: RootState) => state.booking.bookings);
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
-  const [selectedPerks, setSelectedPerks] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { width } = getDimensions();
 
+  function unsubscribe() {
+    return new Promise((resolve, reject) => {
+      firebase
+        .firestore()
+        .collection("tenants")
+        .doc(user?.docId)
+        .collection("bookings")
+        .onSnapshot(
+          (snapshot) => {
+            if (snapshot.empty) {
+              resolve([]); // Resolve with an empty array if snapshot is empty
+              return;
+            }
+            const result: any = [];
+            snapshot.forEach((doc) => {
+              const bookingData = doc.data();
+              const bookingWithShowState = { ...bookingData, showState: false };
+              result.push(bookingWithShowState);
+            });
+            resolve(result); // Resolve with the result array
+          },
+          (error) => {
+            console.log(error);
+            reject(error); // Reject with the error if onSnapshot encounters an error
+          }
+        );
+    });
+  }
   useEffect(() => {
     let isMounted = true;
     let unsubscribe: any;
@@ -69,8 +91,20 @@ const UserHomeScreen = ({ navigation }: any) => {
     }
     return () => {
       unsubscribe();
+
       isMounted = false;
     };
+  }, []);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      unsubscribe().then((res) => dispatch(setBooking(res)));
+      fetchApartments(5, undefined, user?.userType).then((res) =>
+        dispatch(setApartments(res))
+      );
+      setRefreshing(false);
+    }, 1000);
   }, []);
 
   const recentFilteredBookings = bookings.filter((item) => {
@@ -82,28 +116,33 @@ const UserHomeScreen = ({ navigation }: any) => {
   return (
     <SafeScreenView>
       <View className="flex-1 px-[2px]">
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <View
-            className="w-full overflow-hidden rounded-b-[40px]"
+        {/* <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> */}
+        <View
+          className="w-full overflow-hidden rounded-b-[40px]"
+          style={{
+            height: verticalScale(250),
+          }}
+        >
+          {/* search */}
+          <HomeSearch
+            search={search}
+            setSearch={setSearch}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
+
+          <Image
+            className="w-full object-cover rounded-b-[25px] -z-50"
+            source={require("../../assets/capitol_2.jpg")}
             style={{
+              transform: [{ scale: 1.3 }],
               height: verticalScale(250),
             }}
-          >
-            {/* search */}
-            <HomeSearch search={search} setSearch={setSearch} />
+          />
 
-            <Image
-              className="w-full object-cover rounded-b-[25px] -z-50"
-              source={require("../../assets/capitol_2.jpg")}
-              style={{
-                transform: [{ scale: 1.3 }],
-                height: verticalScale(250),
-              }}
-            />
-
-            <View className="absolute inset-0 bg-black/40 w-full h-full " />
-          </View>
-        </TouchableWithoutFeedback>
+          <View className="absolute inset-0 bg-black/40 w-full h-full " />
+        </View>
+        {/* </TouchableWithoutFeedback> */}
         {/* amenity */}
         {/* <AmenityFilter
           setSelectedPerks={setSelectedPerks}
@@ -122,6 +161,9 @@ const UserHomeScreen = ({ navigation }: any) => {
           <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
             <View className="flex-1">
               {recentFilteredBookings?.length !== 0 && (
@@ -147,7 +189,11 @@ const UserHomeScreen = ({ navigation }: any) => {
             </View>
 
             {/* recommended */}
-            <View className="flex-1">
+            <View
+              className={`flex-1 ${
+                recentFilteredBookings?.length === 0 ? "mt-10" : "mt-0"
+              }`}
+            >
               <View>
                 {apartments?.length !== 0 ? (
                   <Text className="font-bold py-2">Recommended for you</Text>
@@ -178,6 +224,12 @@ const UserHomeScreen = ({ navigation }: any) => {
           </ScrollView>
         </View>
       </View>
+      <SearchModal
+        navigation={navigation}
+        apartments={apartments}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </SafeScreenView>
   );
 };

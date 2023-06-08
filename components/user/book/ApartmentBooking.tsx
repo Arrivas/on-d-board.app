@@ -90,7 +90,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
       apartmentBookDocId: "",
       tenantBookDocId: "",
     };
-
+    dispatch(setLoading(true));
     await firebase
       .firestore()
       .collection("tenants")
@@ -111,7 +111,7 @@ const ApartmentBooking = ({ route, navigation }: any) => {
       });
 
     dispatch(addBooking(pending));
-    dispatch(setLoading(true));
+
     let apartmentBookDocId = "";
 
     await firebase

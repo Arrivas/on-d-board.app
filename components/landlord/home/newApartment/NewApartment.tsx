@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { setUser } from "../../../../store/userSlice";
 import { setApartments } from "../../../../store/apartmentsSlice";
+import { setLoading } from "../../../../store/loadingSlice";
 
 const NewApartment = ({ navigation }: any) => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -82,7 +83,7 @@ const NewApartment = ({ navigation }: any) => {
         barangay: selectedBarangay,
         description: firstStepValues.description,
         imageUrl:
-          "https://firebasestorage.googleapis.com/v0/b/on-d-board.appspot.com/o/no_image.jpg?alt=media&token=70198e54-cf22-4c64-a3e7-eece584ab754",
+          "https://firebasestorage.googleapis.com/v0/b/on-d-board.appspot.com/o/no_image.jpg?alt=media&token=80a37349-918f-406e-bbe5-3031bc9ef0bc",
         geoLocation,
         price: {
           from: values?.priceFrom,
@@ -99,7 +100,9 @@ const NewApartment = ({ navigation }: any) => {
         bedspace: values?.bedspace,
       },
       docId: "",
+      accountStatus: user.accountStatus,
     };
+    dispatch(setLoading(true));
     await firebase
       .firestore()
       .collection("apartments")
@@ -126,6 +129,7 @@ const NewApartment = ({ navigation }: any) => {
         ToastAndroid.show("created successfully", ToastAndroid.SHORT);
       })
       .catch((err) => console.log(err));
+    dispatch(setLoading(false));
   };
 
   return (
