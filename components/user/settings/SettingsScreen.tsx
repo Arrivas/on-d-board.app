@@ -45,41 +45,49 @@ const SettingsScreen = ({ navigation }: any) => {
             </TouchableNativeFeedback>
           </>
         )}
-        <View className="ml-2 flex-row justify-between my-5">
-          <Text>Account Status</Text>
-          <Text
-            className="p-2 rounded-full text-white px-3 text-xs"
-            style={{ backgroundColor: colors.primary }}
-          >
-            {user?.accountStatus === "notVerified"
-              ? "not verified"
-              : user?.accountStatus === "waiting"
-              ? "on process"
-              : user?.accountStatus === "declined"
-              ? "declined"
-              : "verified"}
-          </Text>
-        </View>
-        <TouchableNativeFeedback
-          disabled={user?.accountStatus === "verified" ? true : false}
-          onPress={() => navigation.navigate("Verification")}
-        >
-          <View className="my-2 self-end">
-            <Text
-              style={{
-                color:
-                  user?.accountStatus === "verified" ? "black" : colors.primary,
-              }}
-              className={`${
-                user?.accountStatus === "verified" ? "" : "underline"
-              }`}
+        {/* @ts-ignore */}
+        {user !== "anonymous" && (
+          <>
+            <View className="ml-2 flex-row justify-between my-5">
+              <Text>Account Status</Text>
+              <Text
+                className="p-2 rounded-full text-white px-3 text-xs"
+                style={{ backgroundColor: colors.primary }}
+              >
+                {user?.accountStatus === "notVerified"
+                  ? "not verified"
+                  : user?.accountStatus === "waiting"
+                  ? "on process"
+                  : user?.accountStatus === "declined"
+                  ? "declined"
+                  : "verified"}
+              </Text>
+            </View>
+            <TouchableNativeFeedback
+              disabled={user?.accountStatus === "verified" ? true : false}
+              onPress={() => navigation.navigate("Verification")}
             >
-              {user?.accountStatus === "verified"
-                ? "your account is verified"
-                : "verify your account now"}
-            </Text>
-          </View>
-        </TouchableNativeFeedback>
+              <View className="my-2 self-end">
+                <Text
+                  style={{
+                    color:
+                      user?.accountStatus === "verified"
+                        ? "black"
+                        : colors.primary,
+                  }}
+                  className={`${
+                    user?.accountStatus === "verified" ? "" : "underline"
+                  }`}
+                >
+                  {user?.accountStatus === "verified"
+                    ? "your account is verified"
+                    : "verify your account now"}
+                </Text>
+              </View>
+            </TouchableNativeFeedback>
+          </>
+        )}
+
         {/* logout */}
         {/* @ts-ignore */}
         {user !== "anonymous" && (
