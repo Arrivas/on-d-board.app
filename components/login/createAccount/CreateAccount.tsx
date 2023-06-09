@@ -81,13 +81,16 @@ const CreateAccount = ({ navigation }: any) => {
   };
 
   const handleCreateUser = async (values: CreateUser) => {
-    values.email = emailDetails;
+    values.email = emailDetails.trim();
     values.accountStatus = "notVerified";
     try {
       dispatch(setLoading(true));
       const { user } = await firebase
         .auth()
-        .createUserWithEmailAndPassword(values.email, values.password);
+        .createUserWithEmailAndPassword(
+          values.email.trim(),
+          values.password.trim()
+        );
       // await user.sendEmailVerification();
       values.uid = user.uid;
       values.imageUrl =
